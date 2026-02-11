@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 
+        Estrutura de Menus do Módulo Controle de Combustível
+        Design baseado nas referências visuais fornecidas
+    -->
+    
+    <!-- Menu Principal do Módulo -->
+    <menuitem 
+        id="menu_controle_combustivel_root"
+        name="Combustível"
+        sequence="50"
+        web_icon="controle_combustivel,static/description/icon.png"
+        groups="group_motorista"/>
+    
+    <!-- Submenu: Dashboard (primeiro item) -->
+    <menuitem 
+        id="menu_dashboard"
+        name="Dashboard"
+        parent="menu_controle_combustivel_root"
+        action="action_dashboard_url"
+        sequence="1"
+        groups="group_analista"/>
+    
+    <!-- Submenu: Abastecimentos -->
+    <menuitem 
+        id="menu_abastecimentos"
+        name="Abastecimentos"
+        parent="menu_controle_combustivel_root"
+        action="action_abastecimento_tree"
+        sequence="10"
+        groups="group_motorista"/>
+    
+    <!-- Submenu: Tanque -->
+    <menuitem 
+        id="menu_tanque"
+        name="Tanque"
+        parent="menu_controle_combustivel_root"
+        sequence="20"
+        groups="group_analista"/>
+    
+    <menuitem 
+        id="menu_tanque_status"
+        name="Status do Tanque"
+        parent="menu_tanque"
+        action="action_tanque_form"
+        sequence="1"
+        groups="group_analista"/>
+    
+    <menuitem 
+        id="menu_entradas"
+        name="Entradas de Combustível"
+        parent="menu_tanque"
+        action="action_entrada_tree"
+        sequence="5"
+        groups="group_administrador"/>
+    
+    <!-- Submenu: Relatórios -->
+    <menuitem 
+        id="menu_relatorios"
+        name="Relatórios"
+        parent="menu_controle_combustivel_root"
+        sequence="30"
+        groups="group_analista"/>
+    
+    <menuitem 
+        id="menu_relatorio_consumo"
+        name="Consumo por Período"
+        parent="menu_relatorios"
+        action="action_abastecimento_pivot"
+        sequence="1"
+        groups="group_analista"/>
+    
+    <menuitem 
+        id="menu_relatorio_grafico"
+        name="Gráfico de Consumo"
+        parent="menu_relatorios"
+        action="action_abastecimento_graph"
+        sequence="5"
+        groups="group_analista"/>
+    
+    <!-- Submenu: Configuração -->
+    <menuitem 
+        id="menu_configuracao"
+        name="Configuração"
+        parent="menu_controle_combustivel_root"
+        sequence="100"
+        groups="group_administrador"/>
+    
+    <menuitem 
+        id="menu_config_tanque"
+        name="Configurar Tanque"
+        parent="menu_configuracao"
+        action="action_tanque_tree"
+        sequence="1"
+        groups="group_administrador"/>
+
+</odoo>

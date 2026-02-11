@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="controle_combustivel.FuelDashboard" owl="1">
+        <div class="o_combustivel_dashboard container-fluid py-4 overflow-auto h-100 bg-light">
+            <!-- Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="h3 mb-1 fw-bold">Dashboard de Combustível</h1>
+                            <p class="text-muted mb-0">
+                                <span class="badge bg-success me-2">
+                                    <i class="fa fa-circle me-1"></i> Odoo Sync Ativo
+                                </span>
+                                Sistema pronto para uso
+                            </p>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" t-on-click="createAbastecimento">
+                                <i class="fa fa-plus me-1"></i> Novo Abastecimento
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- KPI Cards Row -->
+            <div class="row g-4 mb-4" t-if="state.data.tanque">
+                <!-- Card: Estoque Atual -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <p class="text-uppercase text-muted small fw-semibold mb-1">Estoque Atual</p>
+                                    <h2 class="mb-0 fw-bold">
+                                        <t t-esc="Math.round(state.data.tanque.estoque_atual || 0)"/> 
+                                        <small class="text-muted fw-normal">L</small>
+                                    </h2>
+                                </div>
+                                <div t-attf-class="badge rounded-pill #{state.data.tanque.percentual_nivel > 50 ? 'bg-success' : (state.data.tanque.percentual_nivel >= 20 ? 'bg-warning' : 'bg-danger')}">
+                                    <t t-esc="Math.round(state.data.tanque.percentual_nivel || 0)"/>%
+                                </div>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div t-attf-class="progress-bar #{state.data.tanque.percentual_nivel > 50 ? 'bg-success' : (state.data.tanque.percentual_nivel >= 20 ? 'bg-warning' : 'bg-danger')}" 
+                                     role="progressbar"
+                                     t-attf-style="width: #{state.data.tanque.percentual_nivel || 0}%"
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                            <p class="text-muted small mt-2 mb-0">
+                                Capacidade: <t t-esc="state.data.tanque.capacidade"/> L
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card: Consumo Mensal -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <p class="text-uppercase text-muted small fw-semibold mb-1">Consumo do Mês</p>
+                            <h2 class="mb-0 fw-bold">
+                                <t t-esc="Math.round(state.data.consumo_litros || 0)"/> 
+                                <small class="text-muted fw-normal">L</small>
+                            </h2>
+                            <p class="text-muted small mt-2 mb-0">Volume abastecido</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card: Gasto Mensal -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <p class="text-uppercase text-muted small fw-semibold mb-1">Gasto do Mês</p>
+                            <h2 class="mb-0 fw-bold">
+                                R$ <t t-esc="(state.data.consumo_valor || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})"/>
+                            </h2>
+                            <p class="text-muted small mt-2 mb-0">Total financeiro</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card: Total de Abastecimentos -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <p class="text-uppercase text-muted small fw-semibold mb-1">Abastecimentos</p>
+                            <h2 class="mb-0 fw-bold">
+                                <t t-esc="state.data.total_abastecimentos || 0"/>
+                            </h2>
+                            <p class="text-muted small mt-2 mb-0">Operações realizadas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Row -->
+            <div class="row g-4" t-if="state.data.tanque">
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header bg-white border-0 py-3">
+                            <h5 class="mb-0 fw-semibold">
+                                <i class="fa fa-clock-o me-2 text-primary"></i>
+                                Último Abastecimento
+                            </h5>
+                        </div>
+                        <div class="card-body" t-if="state.data.ultimo_abastecimento">
+                            <div class="table-responsive">
+                                <table class="table table-borderless mb-0">
+                                    <tr>
+                                        <td class="text-muted" style="width: 40%;">Data/Hora</td>
+                                        <td class="fw-semibold"><t t-esc="state.data.ultimo_abastecimento.data_hora"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Veículo</td>
+                                        <td class="fw-semibold">
+                                            <t t-esc="state.data.ultimo_abastecimento.equipamento"/> 
+                                            (<t t-esc="state.data.ultimo_abastecimento.placa"/>)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Quantidade</td>
+                                        <td class="fw-semibold"><t t-esc="state.data.ultimo_abastecimento.quantidade"/> L</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Motorista</td>
+                                        <td class="fw-semibold"><t t-esc="state.data.ultimo_abastecimento.usuario"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-body text-center py-5" t-else="">
+                            <div class="text-muted">
+                                <i class="fa fa-info-circle fa-2x mb-3 opacity-25"></i>
+                                <p class="mb-0">Nenhum abastecimento registrado</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Status do Tanque Visual -->
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header bg-white border-0 py-3">
+                            <h5 class="mb-0 fw-semibold">
+                                <i class="fa fa-tint me-2 text-primary"></i>
+                                Status do Tanque
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-center h-100">
+                                <div class="tank-visual me-4">
+                                    <div class="tank-container shadow-sm border">
+                                        <div t-attf-class="tank-level #{state.data.tanque.percentual_nivel > 50 ? 'tank-green' : (state.data.tanque.percentual_nivel >= 20 ? 'tank-yellow' : 'tank-red')}" 
+                                             t-attf-style="height: #{state.data.tanque.percentual_nivel || 0}%;">
+                                        </div>
+                                    </div>
+                                    <div class="tank-percentage text-center mt-2 fw-bold">
+                                        <t t-esc="Math.round(state.data.tanque.percentual_nivel || 0)"/>%
+                                    </div>
+                                </div>
+                                <div class="tank-info ms-3">
+                                    <div class="mb-2">
+                                        <label class="text-muted small d-block">Nome</label>
+                                        <span class="fw-bold"><t t-esc="state.data.tanque.name"/></span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="text-muted small d-block">Capacidade</label>
+                                        <span class="fw-bold"><t t-esc="state.data.tanque.capacidade"/> L</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="text-muted small d-block">Disponível</label>
+                                        <span class="fw-bold"><t t-esc="Math.round(state.data.tanque.estoque_atual || 0)"/> L</span>
+                                    </div>
+                                    <div>
+                                        <label class="text-muted small d-block">Status</label>
+                                        <span t-attf-class="badge #{state.data.tanque.percentual_nivel > 50 ? 'bg-success' : (state.data.tanque.percentual_nivel >= 20 ? 'bg-warning' : 'bg-danger')}">
+                                            <t t-if="state.data.tanque.percentual_nivel > 50">Operacional</t>
+                                            <t t-if="state.data.tanque.percentual_nivel <= 50 &amp;&amp; state.data.tanque.percentual_nivel >= 20">Nível Baixo</t>
+                                            <t t-if="state.data.tanque.percentual_nivel &lt; 20">Crítico</t>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 
+        Sequências para numeração automática
+    -->
+    
+    <!-- Sequência de Abastecimentos -->
+    <record id="sequence_abastecimento" model="ir.sequence">
+        <field name="name">Abastecimento de Combustível</field>
+        <field name="code">controle.combustivel.abastecimento</field>
+        <field name="prefix">ABAST/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    
+    <!-- Sequência de Entradas -->
+    <record id="sequence_entrada" model="ir.sequence">
+        <field name="name">Entrada de Combustível</field>
+        <field name="code">controle.combustivel.entrada</field>
+        <field name="prefix">ENT/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

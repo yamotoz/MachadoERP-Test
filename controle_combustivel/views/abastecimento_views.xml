@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 
+        Views de Abastecimento de Combustível
+        Design baseado em fuel_supply_entry_form.html e fuel_consumption_report.html
+    -->
+    
+    <!-- Form View: Abastecimento -->
+    <record id="view_abastecimento_form" model="ir.ui.view">
+        <field name="name">controle.combustivel.abastecimento.form</field>
+        <field name="model">controle.combustivel.abastecimento</field>
+        <field name="arch" type="xml">
+            <form string="Abastecimento de Combustível">
+                <header>
+                    <button name="action_confirmar" 
+                            string="Confirmar Abastecimento" 
+                            type="object" 
+                            class="btn-primary"
+                            invisible="state != 'rascunho'"/>
+                    <button name="action_cancelar" 
+                            string="Cancelar" 
+                            type="object"
+                            invisible="state not in ('rascunho', 'confirmado')"
+                            confirm="Tem certeza que deseja cancelar este abastecimento?"/>
+                    <button name="action_voltar_rascunho" 
+                            string="Voltar a Rascunho" 
+                            type="object"
+                            invisible="state != 'cancelado'"
+                            groups="controle_combustivel.group_administrador"/>
+                    <button name="action_imprimir" 
+                            string="Imprimir" 
+                            type="object"
+                            invisible="state != 'confirmado'"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="rascunho,confirmado"/>
+                </header>
+                <sheet>
+                    <!-- Título principal -->
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="1" placeholder="Novo"/>
+                        </h1>
+                    </div>
+                    
+                    <!-- Alerta de estoque baixo -->
+                    <div class="alert alert-warning" role="alert"
+                         invisible="estoque_disponivel >= quantidade_litros or state != 'rascunho'">
+                        <strong>⚠️ Atenção:</strong> Estoque insuficiente para este abastecimento.
+                        Disponível: <field name="estoque_disponivel" readonly="1"/> litros.
+                    </div>
+                    
+                    <!-- Grupo: Identificação -->
+                    <group>
+                        <group string="Identificação Principal">
+                            <field name="equipamento_id" 
+                                   readonly="state != 'rascunho'"
+                                   options="{'no_create': True}"/>
+                            <field name="placa" readonly="1"/>
+                            <field name="data_hora" readonly="state != 'rascunho'"/>
+                            <field name="tanque_id" 
+                                   readonly="state != 'rascunho'"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group string="Valores Financeiros">
+                            <label for="quantidade_litros"/>
+                            <div class="o_row">
+                                <field name="quantidade_litros" 
+                                       readonly="state != 'rascunho'"
+                                       class="oe_inline"/>
+                                <span>litros</span>
+                            </div>
+                            <label for="valor_por_litro"/>
+                            <div class="o_row">
+                                <span>R$</span>
+                                <field name="valor_por_litro" 
+                                       readonly="state != 'rascunho'"
+                                       class="oe_inline"
+                                       groups="controle_combustivel.group_administrador"/>
+                                <field name="valor_por_litro" 
+                                       readonly="1"
+                                       class="oe_inline"
+                                       groups="!controle_combustivel.group_administrador"/>
+                            </div>
+                            <label for="total"/>
+                            <div class="o_row">
+                                <span>R$</span>
+                                <field name="total" readonly="1" class="oe_inline fw-bold"/>
+                            </div>
+                        </group>
+                    </group>
+                    
+                    <!-- Grupo: Medição e Responsáveis -->
+                    <group>
+                        <group string="Medição do Equipamento">
+                            <field name="tipo_medicao" readonly="state != 'rascunho'"/>
+                            <label for="horimetro_odometro"/>
+                            <div class="o_row">
+                                <field name="horimetro_odometro" 
+                                       readonly="state != 'rascunho'"
+                                       class="oe_inline"/>
+                                <span invisible="tipo_medicao != 'odometro'">km</span>
+                                <span invisible="tipo_medicao != 'horimetro'">h</span>
+                            </div>
+                        </group>
+                        <group string="Responsáveis">
+                            <field name="motorista_id" 
+                                   readonly="state != 'rascunho'"
+                                   options="{'no_create': True}"/>
+                            <field name="usuario_id"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Grupo: Comprovante e Observações -->
+                    <group>
+                        <group string="Comprovante">
+                            <field name="comprovante" 
+                                   filename="comprovante_filename"
+                                   readonly="state != 'rascunho'"/>
+                            <field name="comprovante_filename" invisible="1"/>
+                        </group>
+                    </group>
+                    
+                    <separator string="Observações"/>
+                    <field name="observacao" 
+                           nolabel="1" 
+                           readonly="state != 'rascunho'"
+                           placeholder="Observações ou anotações sobre o abastecimento..."/>
+                    
+                    <field name="company_id" invisible="1"/>
+                </sheet>
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Tree View: Abastecimento -->
+    <record id="view_abastecimento_tree" model="ir.ui.view">
+        <field name="name">controle.combustivel.abastecimento.tree</field>
+        <field name="model">controle.combustivel.abastecimento</field>
+        <field name="arch" type="xml">
+            <list string="Abastecimentos" 
+                  decoration-muted="state == 'cancelado'"
+                  decoration-info="state == 'rascunho'"
+                  decoration-success="state == 'confirmado'">
+                <field name="name"/>
+                <field name="data_hora"/>
+                <field name="equipamento_id"/>
+                <field name="placa"/>
+                <field name="motorista_id" optional="show"/>
+                <field name="quantidade_litros" sum="Total Litros"/>
+                <field name="valor_por_litro" optional="hide"/>
+                <field name="total" sum="Total R$"/>
+                <field name="horimetro_odometro" optional="hide"/>
+                <field name="usuario_id" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'rascunho'"
+                       decoration-success="state == 'confirmado'"
+                       decoration-muted="state == 'cancelado'"/>
+            </list>
+        </field>
+    </record>
+    
+    <!-- Kanban View: Abastecimento (opcional) -->
+    <record id="view_abastecimento_kanban" model="ir.ui.view">
+        <field name="name">controle.combustivel.abastecimento.kanban</field>
+        <field name="model">controle.combustivel.abastecimento</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="name"/>
+                <field name="equipamento_id"/>
+                <field name="placa"/>
+                <field name="quantidade_litros"/>
+                <field name="total"/>
+                <field name="state"/>
+                <field name="data_hora"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_record_top mb-2">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <field name="state" widget="label_selection" 
+                                       options="{'classes': {'rascunho': 'info', 'confirmado': 'success', 'cancelado': 'muted'}}"/>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div><strong>Veículo:</strong> <field name="equipamento_id"/> (<field name="placa"/>)</div>
+                                <div><strong>Quantidade:</strong> <field name="quantidade_litros"/> L</div>
+                                <div><strong>Total:</strong> R$ <field name="total"/></div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="data_hora" widget="date"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    
+    <!-- Search View: Abastecimento -->
+    <record id="view_abastecimento_search" model="ir.ui.view">
+        <field name="name">controle.combustivel.abastecimento.search</field>
+        <field name="model">controle.combustivel.abastecimento</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Abastecimentos">
+                <field name="name"/>
+                <field name="equipamento_id"/>
+                <field name="placa"/>
+                <field name="motorista_id"/>
+                <field name="usuario_id"/>
+                
+                <separator/>
+                <filter name="filter_rascunho" string="Rascunho" domain="[('state', '=', 'rascunho')]"/>
+                <filter name="filter_confirmado" string="Confirmado" domain="[('state', '=', 'confirmado')]"/>
+                <filter name="filter_cancelado" string="Cancelado" domain="[('state', '=', 'cancelado')]"/>
+                <separator/>
+                
+                <filter name="filter_meus" string="Meus Registros" domain="[('usuario_id', '=', uid)]"/>
+                
+                <group name="group_by">
+                    <filter name="group_equipamento" string="Veículo" context="{'group_by': 'equipamento_id'}"/>
+                    <filter name="group_motorista" string="Motorista" context="{'group_by': 'motorista_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <!-- Pivot View: Abastecimento (Relatório) -->
+    <record id="view_abastecimento_pivot" model="ir.ui.view">
+        <field name="name">controle.combustivel.abastecimento.pivot</field>
+        <field name="model">controle.combustivel.abastecimento</field>
+        <field name="arch" type="xml">
+            <pivot string="Consumo de Combustível" sample="1">
+                <field name="data_hora" type="row" interval="month"/>
+                <field name="equipamento_id" type="row"/>
+                <field name="quantidade_litros" type="measure"/>
+                <field name="total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    
+    <!-- Graph View: Abastecimento -->
+    <record id="view_abastecimento_graph" model="ir.ui.view">
+        <field name="name">controle.combustivel.abastecimento.graph</field>
+        <field name="model">controle.combustivel.abastecimento</field>
+        <field name="arch" type="xml">
+            <graph string="Gráfico de Consumo" type="bar" sample="1">
+                <field name="data_hora" type="row" interval="month"/>
+                <field name="quantidade_litros" type="measure"/>
+                <field name="total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+    
+    <!-- Calendar View: Abastecimento -->
+    <record id="view_abastecimento_calendar" model="ir.ui.view">
+        <field name="name">controle.combustivel.abastecimento.calendar</field>
+        <field name="model">controle.combustivel.abastecimento</field>
+        <field name="arch" type="xml">
+            <calendar string="Calendário de Abastecimentos" 
+                      date_start="data_hora" 
+                      color="equipamento_id"
+                      mode="month">
+                <field name="name"/>
+                <field name="equipamento_id"/>
+                <field name="quantidade_litros"/>
+            </calendar>
+        </field>
+    </record>
+    
+    <!-- Action: Abastecimentos (Tree/Form principal) -->
+    <record id="action_abastecimento_tree" model="ir.actions.act_window">
+        <field name="name">Abastecimentos</field>
+        <field name="res_model">controle.combustivel.abastecimento</field>
+        <field name="view_mode">list,form,kanban,calendar</field>
+        <field name="search_view_id" ref="view_abastecimento_search"/>
+        <field name="context">{
+            'search_default_filter_confirmado': 0,
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registre o primeiro abastecimento
+            </p>
+            <p>
+                Controle todos os abastecimentos de combustível da sua frota.
+                Acompanhe consumo, custos e histórico de abastecimentos.
+            </p>
+        </field>
+    </record>
+    
+    <!-- Action: Relatório Pivot -->
+    <record id="action_abastecimento_pivot" model="ir.actions.act_window">
+        <field name="name">Consumo por Período</field>
+        <field name="res_model">controle.combustivel.abastecimento</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_abastecimento_search"/>
+        <field name="domain">[('state', '=', 'confirmado')]</field>
+        <field name="context">{
+            'search_default_filter_mes': 1,
+        }</field>
+    </record>
+    
+    <!-- Action: Gráfico -->
+    <record id="action_abastecimento_graph" model="ir.actions.act_window">
+        <field name="name">Gráfico de Consumo</field>
+        <field name="res_model">controle.combustivel.abastecimento</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="search_view_id" ref="view_abastecimento_search"/>
+        <field name="domain">[('state', '=', 'confirmado')]</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 
+        Grupos de Segurança do Módulo Controle de Combustível
+        Hierarquia: Motorista < Analista < Administrador
+    -->
+    
+    <!-- Categoria do Módulo -->
+    <record id="module_category_combustivel" model="ir.module.category">
+        <field name="name">Controle de Combustível</field>
+        <field name="description">Gerenciamento de abastecimento de combustível</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <!-- Privilégio do Módulo (Novidade Odoo 19) -->
+    <record id="res_groups_privilege_combustivel" model="res.groups.privilege">
+        <field name="name">Controle de Combustível</field>
+        <field name="sequence">20</field>
+        <field name="category_id" ref="module_category_combustivel"/>
+    </record>
+    
+    <!-- Grupo: Motorista -->
+    <record id="group_motorista" model="res.groups">
+        <field name="name">Motorista</field>
+        <field name="sequence">1</field>
+        <field name="privilege_id" ref="res_groups_privilege_combustivel"/>
+        <field name="comment">
+            Pode registrar abastecimentos próprios.
+            Não pode alterar estoque manualmente.
+            Não pode ver relatórios gerenciais.
+        </field>
+    </record>
+    
+    <!-- Grupo: Analista (herda de Motorista) -->
+    <record id="group_analista" model="res.groups">
+        <field name="name">Analista</field>
+        <field name="sequence">2</field>
+        <field name="privilege_id" ref="res_groups_privilege_combustivel"/>
+        <field name="implied_ids" eval="[(4, ref('group_motorista'))]"/>
+        <field name="comment">
+            Acesso somente leitura aos abastecimentos.
+            Pode visualizar relatórios e gráficos.
+            Acesso ao dashboard.
+            Não pode criar/editar/excluir registros.
+        </field>
+    </record>
+    
+    <!-- Grupo: Administrador (herda de Analista) -->
+    <record id="group_administrador" model="res.groups">
+        <field name="name">Administrador</field>
+        <field name="sequence">3</field>
+        <field name="privilege_id" ref="res_groups_privilege_combustivel"/>
+        <field name="implied_ids" eval="[(4, ref('group_analista'))]"/>
+        <field name="comment">
+            Acesso total ao módulo.
+            Pode ajustar estoque manualmente.
+            Pode cancelar abastecimentos confirmados.
+        </field>
+    </record>
+    
+    <!-- 
+        Regras de Registro (Record Rules)
+    -->
+    
+    <!-- Motorista: Vê todos confirmados + próprios rascunhos -->
+    <record id="rule_abastecimento_motorista" model="ir.rule">
+        <field name="name">Motorista: Próprios Rascunhos ou Confirmados</field>
+        <field name="model_id" ref="model_controle_combustivel_abastecimento"/>
+        <field name="groups" eval="[(4, ref('group_motorista'))]"/>
+        <field name="domain_force">[
+            '|',
+            ('state', 'in', ['confirmado', 'cancelado']),
+            '&amp;', ('state', '=', 'rascunho'), ('usuario_id', '=', user.id)
+        ]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    
+    <!-- Analista: Vê todos os registros (somente leitura) -->
+    <record id="rule_abastecimento_analista" model="ir.rule">
+        <field name="name">Analista: Acesso Total Leitura</field>
+        <field name="model_id" ref="model_controle_combustivel_abastecimento"/>
+        <field name="groups" eval="[(4, ref('group_analista'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    
+    <!-- Administrador: Acesso Total -->
+    <record id="rule_abastecimento_admin" model="ir.rule">
+        <field name="name">Administrador: Acesso Total</field>
+        <field name="model_id" ref="model_controle_combustivel_abastecimento"/>
+        <field name="groups" eval="[(4, ref('group_administrador'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    
+    <!-- Tanque: Apenas leitura para motorista -->
+    <record id="rule_tanque_motorista" model="ir.rule">
+        <field name="name">Tanque: Motorista Leitura</field>
+        <field name="model_id" ref="model_controle_combustivel_tanque"/>
+        <field name="groups" eval="[(4, ref('group_motorista'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    
+    <!-- Tanque: Administrador acesso total -->
+    <record id="rule_tanque_admin" model="ir.rule">
+        <field name="name">Tanque: Administrador Total</field>
+        <field name="model_id" ref="model_controle_combustivel_tanque"/>
+        <field name="groups" eval="[(4, ref('group_administrador'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+</odoo>

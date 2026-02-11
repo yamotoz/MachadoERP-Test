@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans', sans-serif;
+            line-height: 1.6;
+            color: #464A4B;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #A43A2F;
+        }
+
+        h2 {
+            color: #464A4B;
+            border-bottom: 2px solid #A43A2F;
+            padding-bottom: 5px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            color: #28A745;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .screenshot {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin: 10px 0;
+            max-width: 100%;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .badge-primary {
+            background-color: #A43A2F;
+            color: white;
+        }
+
+        .badge-success {
+            background-color: #28A745;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🛢️ Controle de Combustível</h1>
+
+    <p>
+        <span class="badge badge-primary">Odoo 16.0</span>
+        <span class="badge badge-success">Community</span>
+    </p>
+
+    <p>Módulo completo para gerenciamento de abastecimento de combustível integrado ao Odoo.</p>
+
+    <h2>✨ Funcionalidades Principais</h2>
+
+    <ul class="feature-list">
+        <li>Registro completo de abastecimentos</li>
+        <li>Controle de estoque de tanque (6.000 L)</li>
+        <li>Dashboard gerencial em tempo real</li>
+        <li>Relatórios de consumo por período</li>
+        <li>Integração com módulo de Frota</li>
+        <li>Controle de acesso por perfil</li>
+        <li>Auditoria completa de registros</li>
+    </ul>
+
+    <h2>👥 Perfis de Usuário</h2>
+
+    <ul>
+        <li><strong>Motorista:</strong> Registra abastecimentos próprios</li>
+        <li><strong>Analista:</strong> Visualiza relatórios e dashboard</li>
+        <li><strong>Administrador:</strong> Acesso total ao módulo</li>
+    </ul>
+
+    <h2>📊 Dashboard</h2>
+
+    <p>Visualize em tempo real:</p>
+
+    <ul>
+        <li>Nível atual do tanque com indicador colorido</li>
+        <li>Consumo total do mês</li>
+        <li>Gasto total do mês</li>
+        <li>Último abastecimento realizado</li>
+    </ul>
+
+    <h2>🔧 Requisitos</h2>
+
+    <ul>
+        <li>Odoo Community 16.0+</li>
+        <li>Módulo Fleet instalado</li>
+    </ul>
+
+    <h2>📄 Licença</h2>
+
+    <p>LGPL-3</p>
+
+    <hr>
+
+    <p style="color: #697274; font-size: 14px;">
+        Desenvolvido por Machado ERP
+    </p>
+
+</body>
+
+</html>

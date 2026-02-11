@@ -1,0 +1,262 @@
+/*
+ * Dashboard de Combustível - Estilos Customizados
+ * 
+ * Paleta de Cores:
+ * - Primária: #A43A2F
+ * - Background: #F8F9FA
+ * - Texto Escuro: #464A4B
+ * - Texto Secundário: #697274
+ * - Verde: #28A745
+ * - Amarelo: #FFC107
+ * 
+ * Tipografia:
+ * - Títulos: Inter Tight, Noto, sans-serif
+ * - Parágrafos: Inter, Noto, sans-serif
+ */
+
+/* === VARIÁVEIS === */
+:root {
+    --combustivel-primary: #A43A2F;
+    --combustivel-background: #F8F9FA;
+    --combustivel-text-dark: #464A4B;
+    --combustivel-text-secondary: #697274;
+    --combustivel-green: #28A745;
+    --combustivel-yellow: #FFC107;
+    --combustivel-red: #A43A2F;
+}
+
+/* === CONTAINER PRINCIPAL === */
+.o_combustivel_dashboard {
+    font-family: 'Inter', 'Noto Sans', sans-serif;
+    background-color: var(--combustivel-background);
+    min-height: 100vh;
+    color: var(--combustivel-text-dark);
+}
+
+.o_combustivel_dashboard h1,
+.o_combustivel_dashboard h2,
+.o_combustivel_dashboard h3,
+.o_combustivel_dashboard h4,
+.o_combustivel_dashboard h5 {
+    font-family: 'Inter Tight', 'Inter', 'Noto Sans', sans-serif;
+    color: var(--combustivel-text-dark);
+}
+
+/* === CARDS === */
+.o_combustivel_dashboard .card {
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.o_combustivel_dashboard .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.o_combustivel_dashboard .card-header {
+    padding: 1rem 1.25rem;
+}
+
+.o_combustivel_dashboard .card-body {
+    padding: 1.5rem;
+}
+
+/* === BADGES === */
+.o_combustivel_dashboard .badge {
+    font-weight: 600;
+    padding: 0.5em 1em;
+    font-size: 0.75rem;
+}
+
+.o_combustivel_dashboard .bg-success {
+    background-color: var(--combustivel-green) !important;
+}
+
+.o_combustivel_dashboard .bg-warning {
+    background-color: var(--combustivel-yellow) !important;
+    color: #000 !important;
+}
+
+.o_combustivel_dashboard .bg-danger {
+    background-color: var(--combustivel-red) !important;
+}
+
+/* === BOTÕES === */
+.o_combustivel_dashboard .btn-primary {
+    background-color: var(--combustivel-primary);
+    border-color: var(--combustivel-primary);
+    font-weight: 600;
+    padding: 0.625rem 1.25rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.o_combustivel_dashboard .btn-primary:hover {
+    background-color: #8a312a;
+    border-color: #8a312a;
+    transform: translateY(-1px);
+}
+
+/* === PROGRESS BAR === */
+.o_combustivel_dashboard .progress {
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+.o_combustivel_dashboard .progress-bar.bg-success {
+    background-color: var(--combustivel-green) !important;
+}
+
+.o_combustivel_dashboard .progress-bar.bg-warning {
+    background-color: var(--combustivel-yellow) !important;
+}
+
+.o_combustivel_dashboard .progress-bar.bg-danger {
+    background-color: var(--combustivel-red) !important;
+}
+
+/* === TANQUE VISUAL === */
+.tank-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tank-container {
+    width: 60px;
+    height: 150px;
+    background: linear-gradient(to bottom, #e9ecef 0%, #dee2e6 100%);
+    border-radius: 0 0 30px 30px;
+    border: 3px solid #adb5bd;
+    border-top: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tank-container::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -3px;
+    right: -3px;
+    height: 15px;
+    background: #6c757d;
+    border-radius: 5px 5px 0 0;
+}
+
+.tank-level {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transition: height 0.5s ease;
+    border-radius: 0 0 27px 27px;
+}
+
+.tank-level.tank-green {
+    background: linear-gradient(to top, #28A745, #34ce57);
+}
+
+.tank-level.tank-yellow {
+    background: linear-gradient(to top, #FFC107, #ffcd39);
+}
+
+.tank-level.tank-red {
+    background: linear-gradient(to top, #A43A2F, #c4463a);
+}
+
+/* Brilho do líquido */
+.tank-level::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+}
+
+.tank-percentage {
+    font-size: 1rem;
+    color: var(--combustivel-text-dark);
+}
+
+.tank-info {
+    text-align: left;
+}
+
+.tank-info p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.tank-info strong {
+    color: var(--combustivel-text-secondary);
+    font-weight: 500;
+}
+
+/* === TABELAS === */
+.o_combustivel_dashboard .table {
+    font-size: 0.9rem;
+}
+
+.o_combustivel_dashboard .table td {
+    vertical-align: middle;
+    padding: 0.75rem 0;
+    border: none;
+}
+
+/* === RESPONSIVIDADE === */
+@media (max-width: 768px) {
+    .o_combustivel_dashboard .card-body {
+        padding: 1rem;
+    }
+    
+    .tank-container {
+        width: 50px;
+        height: 120px;
+    }
+    
+    .o_combustivel_dashboard h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* === ANIMAÇÕES === */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.o_combustivel_dashboard .badge.bg-success i {
+    animation: pulse 2s infinite;
+}
+
+/* === TEXTO === */
+.text-primary {
+    color: var(--combustivel-primary) !important;
+}
+
+.text-muted {
+    color: var(--combustivel-text-secondary) !important;
+}
+
+/* === ÍCONES === */
+.o_combustivel_dashboard .fa {
+    font-size: 1rem;
+}
+
+/* === SOMBRAS === */
+.shadow-sm {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+}

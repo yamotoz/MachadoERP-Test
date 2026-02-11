@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 
+        Relatórios de Abastecimento de Combustível
+    -->
+    
+    <!-- Template do Relatório PDF -->
+    <template id="report_abastecimento_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Cabeçalho -->
+                        <div class="row mb-4">
+                            <div class="col-12 text-center">
+                                <h2 style="color: #A43A2F;">Comprovante de Abastecimento</h2>
+                                <p class="text-muted">Controle de Combustível</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Número e Status -->
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <h4><t t-esc="doc.name"/></h4>
+                            </div>
+                            <div class="col-6 text-end">
+                                <span t-if="doc.state == 'confirmado'" 
+                                      class="badge bg-success">Confirmado</span>
+                                <span t-if="doc.state == 'rascunho'" 
+                                      class="badge bg-secondary">Rascunho</span>
+                                <span t-if="doc.state == 'cancelado'" 
+                                      class="badge bg-danger">Cancelado</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Informações Principais -->
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <td class="fw-bold" style="width: 40%;">Data/Hora:</td>
+                                        <td><t t-esc="doc.data_hora" t-options="{'widget': 'datetime'}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Veículo:</td>
+                                        <td><t t-esc="doc.equipamento_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Placa:</td>
+                                        <td><t t-esc="doc.placa or '-'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Motorista:</td>
+                                        <td><t t-esc="doc.motorista_id.name or '-'"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <td class="fw-bold" style="width: 40%;">Tanque:</td>
+                                        <td><t t-esc="doc.tanque_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Tipo Medição:</td>
+                                        <td>
+                                            <t t-if="doc.tipo_medicao == 'odometro'">Odômetro (km)</t>
+                                            <t t-if="doc.tipo_medicao == 'horimetro'">Horímetro (h)</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Leitura:</td>
+                                        <td>
+                                            <t t-esc="'{:,.0f}'.format(doc.horimetro_odometro)"/>
+                                            <t t-if="doc.tipo_medicao == 'odometro'"> km</t>
+                                            <t t-if="doc.tipo_medicao == 'horimetro'"> h</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Registrado por:</td>
+                                        <td><t t-esc="doc.usuario_id.name"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Valores -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <table class="table table-bordered">
+                                    <thead style="background-color: #464A4B; color: white;">
+                                        <tr>
+                                            <th>Quantidade (L)</th>
+                                            <th>Valor/Litro (R$)</th>
+                                            <th>Total (R$)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center">
+                                                <strong><t t-esc="'{:,.2f}'.format(doc.quantidade_litros)"/></strong>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-esc="'{:,.4f}'.format(doc.valor_por_litro)"/>
+                                            </td>
+                                            <td class="text-center" style="font-size: 1.2em;">
+                                                <strong style="color: #A43A2F;">
+                                                    R$ <t t-esc="'{:,.2f}'.format(doc.total)"/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Observações -->
+                        <t t-if="doc.observacao">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5>Observações:</h5>
+                                    <p><t t-esc="doc.observacao"/></p>
+                                </div>
+                            </div>
+                        </t>
+                        
+                        <!-- Rodapé -->
+                        <div class="row mt-5">
+                            <div class="col-6 text-center">
+                                <div style="border-top: 1px solid #000; width: 80%; margin: 0 auto; padding-top: 5px;">
+                                    Motorista
+                                </div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div style="border-top: 1px solid #000; width: 80%; margin: 0 auto; padding-top: 5px;">
+                                    Responsável
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    
+    <!-- Report Action -->
+    <record id="action_report_abastecimento" model="ir.actions.report">
+        <field name="name">Comprovante de Abastecimento</field>
+        <field name="model">controle.combustivel.abastecimento</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">controle_combustivel.report_abastecimento_document</field>
+        <field name="report_file">controle_combustivel.report_abastecimento_document</field>
+        <field name="binding_model_id" ref="model_controle_combustivel_abastecimento"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

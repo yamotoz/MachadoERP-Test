@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 
+        Configuração inicial do tanque de combustível
+        Capacidade fixa de 6.000 litros
+    -->
+    
+    <record id="tanque_principal" model="controle.combustivel.tanque">
+        <field name="name">Tanque Principal</field>
+        <field name="capacidade">6000.0</field>
+        <field name="estoque_manual">0.0</field>
+    </record>
+
+</odoo>

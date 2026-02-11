@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 
+        Dashboard de Combustível
+        Design inspirado em fuel_tank_inventory_status.html
+        
+        Cores:
+        - Primária: #A43A2F
+        - Background: #F8F9FA
+        - Texto Escuro: #464A4B
+        - Texto Secundário: #697274
+        - Verde: #28A745
+        - Amarelo: #FFC107
+    -->
+    
+    <!-- Template QWeb do Dashboard -->
+    <template id="dashboard_combustivel_template">
+        <t t-call="web.basic_layout">
+            <t t-set="head">
+                <link rel="stylesheet" 
+                      href="/controle_combustivel/static/src/css/dashboard.css"/>
+            </t>
+            <div class="o_combustivel_dashboard container-fluid py-4">
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h1 class="h3 mb-1 fw-bold">Dashboard de Combustível</h1>
+                                <p class="text-muted mb-0">
+                                    <span class="badge bg-success me-2">
+                                        <i class="fa fa-circle me-1"></i> Odoo Sync Ativo
+                                    </span>
+                                    Atualizado em <t t-esc="data_atualizacao"/>
+                                </p>
+                            </div>
+                            <div>
+                                <a t-attf-href="/web#action=#{action_abastecimento}" 
+                                   class="btn btn-primary">
+                                    <i class="fa fa-plus me-1"></i> Novo Abastecimento
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- KPI Cards Row -->
+                <div class="row g-4 mb-4">
+                    <!-- Card: Estoque Atual -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <p class="text-uppercase text-muted small fw-semibold mb-1">
+                                            Estoque Atual
+                                        </p>
+                                        <h2 class="mb-0 fw-bold">
+                                            <t t-esc="'{:,.0f}'.format(tanque.estoque_atual)"/> 
+                                            <small class="text-muted fw-normal">L</small>
+                                        </h2>
+                                    </div>
+                                    <div t-attf-class="badge rounded-pill #{cor_badge}">
+                                        <t t-esc="'{:.0f}%'.format(tanque.percentual_nivel)"/>
+                                    </div>
+                                </div>
+                                <!-- Barra de Progresso -->
+                                <div class="progress" style="height: 8px;">
+                                    <div t-attf-class="progress-bar #{cor_progress}" 
+                                         role="progressbar"
+                                         t-attf-style="width: #{tanque.percentual_nivel}%"
+                                         t-att-aria-valuenow="tanque.percentual_nivel"
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                                <p class="text-muted small mt-2 mb-0">
+                                    Capacidade: <t t-esc="'{:,.0f}'.format(tanque.capacidade)"/> L
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card: Consumo Mensal -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <p class="text-uppercase text-muted small fw-semibold mb-1">
+                                    Consumo do Mês
+                                </p>
+                                <h2 class="mb-0 fw-bold">
+                                    <t t-esc="'{:,.0f}'.format(consumo_litros)"/> 
+                                    <small class="text-muted fw-normal">L</small>
+                                </h2>
+                                <p class="text-muted small mt-2 mb-0">
+                                    <t t-esc="periodo_mes"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card: Gasto Mensal -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <p class="text-uppercase text-muted small fw-semibold mb-1">
+                                    Gasto do Mês
+                                </p>
+                                <h2 class="mb-0 fw-bold">
+                                    R$ <t t-esc="'{:,.2f}'.format(consumo_valor)"/>
+                                </h2>
+                                <p class="text-muted small mt-2 mb-0">
+                                    <t t-esc="periodo_mes"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card: Total de Abastecimentos -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <p class="text-uppercase text-muted small fw-semibold mb-1">
+                                    Abastecimentos
+                                </p>
+                                <h2 class="mb-0 fw-bold">
+                                    <t t-esc="total_abastecimentos"/>
+                                </h2>
+                                <p class="text-muted small mt-2 mb-0">
+                                    Este mês
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Último Abastecimento -->
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-transparent border-0">
+                                <h5 class="mb-0 fw-semibold">
+                                    <i class="fa fa-clock-o me-2 text-primary"></i>
+                                    Último Abastecimento
+                                </h5>
+                            </div>
+                            <div class="card-body" t-if="ultimo_abastecimento">
+                                <div class="table-responsive">
+                                    <table class="table table-borderless mb-0">
+                                        <tr>
+                                            <td class="text-muted" style="width: 40%;">Data/Hora</td>
+                                            <td class="fw-semibold">
+                                                <t t-esc="ultimo_abastecimento.data_hora"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Veículo</td>
+                                            <td class="fw-semibold">
+                                                <t t-esc="ultimo_abastecimento.equipamento_id.name"/> 
+                                                (<t t-esc="ultimo_abastecimento.placa or '-'"/>)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Quantidade</td>
+                                            <td class="fw-semibold">
+                                                <t t-esc="'{:,.2f}'.format(ultimo_abastecimento.quantidade_litros)"/> L
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Responsável</td>
+                                            <td class="fw-semibold">
+                                                <t t-esc="ultimo_abastecimento.usuario_id.name"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-body text-center py-5" t-else="">
+                                <p class="text-muted mb-0">Nenhum abastecimento registrado</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Status do Tanque Visual -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-transparent border-0">
+                                <h5 class="mb-0 fw-semibold">
+                                    <i class="fa fa-tint me-2 text-primary"></i>
+                                    Status do Tanque
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <!-- Tanque Visual -->
+                                    <div class="tank-visual me-4">
+                                        <div class="tank-container">
+                                            <div t-attf-class="tank-level #{cor_tank}" 
+                                                 t-attf-style="height: #{tanque.percentual_nivel}%;">
+                                            </div>
+                                        </div>
+                                        <div class="tank-percentage text-center mt-2 fw-bold">
+                                            <t t-esc="'{:.1f}%'.format(tanque.percentual_nivel)"/>
+                                        </div>
+                                    </div>
+                                    <div class="tank-info">
+                                        <p class="mb-2">
+                                            <strong>Nome:</strong> 
+                                            <t t-esc="tanque.name"/>
+                                        </p>
+                                        <p class="mb-2">
+                                            <strong>Capacidade:</strong> 
+                                            <t t-esc="'{:,.0f}'.format(tanque.capacidade)"/> L
+                                        </p>
+                                        <p class="mb-2">
+                                            <strong>Disponível:</strong> 
+                                            <t t-esc="'{:,.0f}'.format(tanque.estoque_atual)"/> L
+                                        </p>
+                                        <p class="mb-0">
+                                            <strong>Status:</strong>
+                                            <span t-attf-class="badge #{cor_badge}">
+                                                <t t-if="tanque.status_nivel == 'normal'">Normal</t>
+                                                <t t-if="tanque.status_nivel == 'atencao'">Atenção</t>
+                                                <t t-if="tanque.status_nivel == 'critico'">Crítico</t>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </t>
+    </template>
+    
+    <!-- Action: Dashboard (URL Action) -->
+    <record id="action_dashboard_url" model="ir.actions.act_url">
+        <field name="name">Dashboard de Combustível</field>
+        <field name="url">/combustivel/dashboard</field>
+        <field name="target">self</field>
+    </record>
+
+</odoo>
