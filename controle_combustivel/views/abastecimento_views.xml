@@ -224,6 +224,11 @@
                 <filter name="filter_confirmado" string="Confirmado" domain="[('state', '=', 'confirmado')]"/>
                 <filter name="filter_cancelado" string="Cancelado" domain="[('state', '=', 'cancelado')]"/>
                 <separator/>
+                <separator/>
+                <filter name="filter_hoje" string="Hoje" domain="[('data_hora', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')), ('data_hora', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                <filter name="filter_mes" string="Este Mês" domain="[('data_hora', '&gt;=', context_today().strftime('%Y-%m-01 00:00:00'))]"/>
+                <filter name="filter_ano" string="Este Ano" domain="[('data_hora', '&gt;=', context_today().strftime('%Y-01-01 00:00:00'))]"/>
+                <separator/>
                 
                 <filter name="filter_meus" string="Meus Registros" domain="[('usuario_id', '=', uid)]"/>
                 

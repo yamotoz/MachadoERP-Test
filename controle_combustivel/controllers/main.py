@@ -69,6 +69,21 @@ class DashboardCombustivelController(http.Controller):
             cor_progress = 'bg-danger'
             cor_tank = 'tank-red'
         
+        # Calcular consumo dos últimos 7 dias para gráfico simples
+        consumo_diario = []
+        for i in range(6, -1, -1):
+            dia = hoje - relativedelta(days=i)
+            litros_dia = sum(Abastecimento.search([
+                ('data_hora', '>=', datetime.combine(dia, datetime.min.time())),
+                ('data_hora', '<=', datetime.combine(dia, datetime.max.time())),
+                ('state', '=', 'confirmado'),
+            ]).mapped('quantidade_litros'))
+            consumo_diario.append({
+                'dia': dia.strftime('%d/%m'),
+                'litros': litros_dia,
+                'altura': min(100, (litros_dia / (consumo_litros/len(abastecimentos_mes) * 3 if total_abastecimentos > 0 else 100)) * 100) if total_abastecimentos > 0 else 0
+            })
+
         # Formatar período
         meses_pt = {
             1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril',
@@ -76,7 +91,7 @@ class DashboardCombustivelController(http.Controller):
             9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro'
         }
         periodo_mes = f"{meses_pt[hoje.month]}/{hoje.year}"
-        
+
         # Preparar dados para o template
         values = {
             'tanque': tanque,
@@ -89,9 +104,8 @@ class DashboardCombustivelController(http.Controller):
             'cor_badge': cor_badge,
             'cor_progress': cor_progress,
             'cor_tank': cor_tank,
-            'action_abastecimento': request.env.ref(
-                'controle_combustivel.action_abastecimento_tree'
-            ).id,
+            'action_abastecimento': request.env.ref('controle_combustivel.action_abastecimento_tree').id,
+            'consumo_diario': consumo_diario,
         }
         
         return request.render(

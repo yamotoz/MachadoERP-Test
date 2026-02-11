@@ -18,17 +18,29 @@
 :root {
     --combustivel-primary: #A43A2F;
     --combustivel-background: #F8F9FA;
+    --combustivel-card-bg: #ffffff;
     --combustivel-text-dark: #464A4B;
     --combustivel-text-secondary: #697274;
     --combustivel-green: #28A745;
     --combustivel-yellow: #FFC107;
     --combustivel-red: #A43A2F;
+    --combustivel-border: rgba(0, 0, 0, 0.1);
+}
+
+/* Suporte ao Modo Escuro nativo do Odoo 19 */
+[data-bs-theme="dark"] .o_combustivel_dashboard,
+[data-bs-theme="dark"] :root {
+    --combustivel-background: #121212;
+    --combustivel-card-bg: #1e1e1e;
+    --combustivel-text-dark: #e1e1e1;
+    --combustivel-text-secondary: #aaaaaa;
+    --combustivel-border: rgba(255, 255, 255, 0.1);
 }
 
 /* === CONTAINER PRINCIPAL === */
 .o_combustivel_dashboard {
     font-family: 'Inter', 'Noto Sans', sans-serif;
-    background-color: var(--combustivel-background);
+    background-color: var(--combustivel-background) !important;
     min-height: 100vh;
     color: var(--combustivel-text-dark);
 }
@@ -45,6 +57,8 @@
 /* === CARDS === */
 .o_combustivel_dashboard .card {
     border-radius: 12px;
+    background-color: var(--combustivel-card-bg) !important;
+    border: 1px solid var(--combustivel-border) !important;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -134,6 +148,11 @@
     box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+[data-bs-theme="dark"] .tank-container {
+    background: linear-gradient(to bottom, #2c2c2c 0%, #1a1a1a 100%);
+    border-color: #444;
+}
+
 .tank-container::before {
     content: '';
     position: absolute;
@@ -174,12 +193,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.15) 50%,
-        rgba(255, 255, 255, 0) 100%
-    );
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.15) 50%,
+            rgba(255, 255, 255, 0) 100%);
 }
 
 .tank-percentage {
@@ -217,12 +234,12 @@
     .o_combustivel_dashboard .card-body {
         padding: 1rem;
     }
-    
+
     .tank-container {
         width: 50px;
         height: 120px;
     }
-    
+
     .o_combustivel_dashboard h2 {
         font-size: 1.5rem;
     }
@@ -230,9 +247,12 @@
 
 /* === ANIMAÇÕES === */
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.5;
     }

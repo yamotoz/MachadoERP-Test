@@ -67,10 +67,13 @@ MachadoERP-Test/
 │   ├── security/            # Grupos, Privilégios e Regras de Acesso
 │   ├── static/              # Ativos (CSS e Imagens)
 │   └── views/               # Interfaces de usuário (XML)
+├── docs/                    # Documentação e requisitos do projeto
+│   ├── prompt1.md           # Requisitos originais (Arquiteto Odoo)
+│   ├── A_ser_feito.md       # Roadmap e tarefas pendentes
+│   └── anotações.md         # Notas rápidas de desenvolvimento
 ├── odoo-19.0/               # Core do Odoo customizado/patcheado
 ├── odoo-venv/               # Ambiente virtual Python
-├── anotações.md             # Notas rápidas de desenvolvimento
-└── prompt1.md               # Requisitos originais do projeto
+└── README.md                # Este guia principal
 ```
 
 ---
