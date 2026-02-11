@@ -1,0 +1,181 @@
+2026-02-11 20:44:53,090 23284 WARNING ? odoo.tools.config: missing --http-interface/http_interface, using 0.0.0.0 by default, will change to 127.0.0.1 in 20.0 
+2026-02-11 20:44:53,091 23284 INFO ? odoo: Odoo version 19.0 
+2026-02-11 20:44:53,091 23284 INFO ? odoo: Using configuration file at c:\users\diluc\desktop\machadoerp-test\odoo-19.0\odoo.conf 
+2026-02-11 20:44:53,091 23284 INFO ? odoo: addons paths: _NamespacePath(['C:\\Users\\diluc\\Desktop\\MachadoERP-Test\\odoo-19.0\\odoo\\addons', 'C:\\Users\\diluc\\AppData\\Local\\OpenERP S.A.\\Odoo\\addons\\19.0', 'c:\\users\\diluc\\desktop\\machadoerp-test\\odoo-19.0\\addons', 'c:\\users\\diluc\\desktop\\machadoerp-test']) 
+2026-02-11 20:44:53,091 23284 INFO ? odoo: database: odoo@127.0.0.1:5432 
+2026-02-11 20:44:53,594 23284 WARNING ? odoo.service.server: 'watchdog' module not installed. Code autoreload feature is disabled 
+2026-02-11 20:44:53,598 23284 INFO ? odoo.service.server: HTTP service (werkzeug) running on DESKTOP-B0C8FIK:8069 
+2026-02-11 20:44:53,649 23284 INFO erp_final odoo.modules.loading: loading 1 modules... 
+2026-02-11 20:44:53,653 23284 INFO erp_final odoo.modules.loading: 1 modules loaded in 0.00s, 0 queries (+0 extra) 
+2026-02-11 20:44:53,664 23284 INFO erp_final odoo.modules.loading: loading 26 modules... 
+2026-02-11 20:44:53,990 23284 WARNING erp_final py.warnings: c:\users\diluc\desktop\machadoerp-test\controle_combustivel\controllers\main.py:165: DeprecationWarning: Since 19.0, @route(type='json') is a deprecated alias to @route(type='jsonrpc')
+  File "C:\Users\diluc\Desktop\MachadoERP-Test\odoo-19.0\odoo-bin", line 6, in <module>
+    odoo.cli.main()
+  File "C:\Users\diluc\Desktop\MachadoERP-Test\odoo-19.0\odoo\cli\command.py", line 133, in main
+    command().run(args)
+  File "C:\Users\diluc\Desktop\MachadoERP-Test\odoo-19.0\odoo\cli\server.py", line 127, in run
+    main(args)
+  File "C:\Users\diluc\Desktop\MachadoERP-Test\odoo-19.0\odoo\cli\server.py", line 118, in main
+    rc = server.start(preload=config['db_name'], stop=stop)
+  File "C:\Users\diluc\Desktop\MachadoERP-Test\odoo-19.0\odoo\service\server.py", line 1596, in start
+    rc = server.run(preload, stop)
+  File "C:\Users\diluc\Desktop\MachadoERP-Test\odoo-19.0\odoo\service\server.py", line 668, in run
+    rc = preload_registries(preload)
+  File "C:\Users\diluc\Desktop\MachadoERP-Test\odoo-19.0\odoo\service\server.py", line 1510, in preload_registries
+    registry = Registry.new(dbname, update_module=update_module, install_modules=config['init'], upgrade_modules=config['update'], reinit_modules=config['reinit'])
+  File "C:\Users\diluc\Desktop\MachadoERP-Test\odoo-19.0\odoo\tools\func.py", line 88, in locked
+    return func(inst, *args, **kwargs)
+  File "C:\Users\diluc\Desktop\MachadoERP-Test\odoo-19.0\odoo\orm\registry.py", line 199, in new
+    load_modules(
+  File "C:\Users\diluc\Desktop\MachadoERP-Test\odoo-19.0\odoo\modules\loading.py", line 456, in load_modules
+    load_module_graph(
+  File "C:\Users\diluc\Desktop\MachadoERP-Test\odoo-19.0\odoo\modules\loading.py", line 170, in load_module_graph
+    load_openerp_module(package.name)
+  File "C:\Users\diluc\Desktop\MachadoERP-Test\odoo-19.0\odoo\modules\module.py", line 505, in load_openerp_module
+    __import__(qualname)
+  File "c:\users\diluc\desktop\machadoerp-test\controle_combustivel\__init__.py", line 4, in <module>
+    from . import controllers
+  File "c:\users\diluc\desktop\machadoerp-test\controle_combustivel\controllers\__init__.py", line 3, in <module>
+    from . import main
+  File "c:\users\diluc\desktop\machadoerp-test\controle_combustivel\controllers\main.py", line 165, in <module>
+    class DashboardClientAction(http.Controller):
+ 
+2026-02-11 20:44:53,991 23284 INFO erp_final odoo.modules.loading: 26 modules loaded in 0.33s, 0 queries (+0 extra) 
+2026-02-11 20:44:54,066 23284 INFO erp_final odoo.modules.loading: Modules loaded. 
+2026-02-11 20:44:54,083 23284 INFO erp_final odoo.registry: Registry loaded in 0.484s 
+2026-02-11 20:47:47,557 23284 INFO ? odoo.registry: Reloading the model registry after database signaling. 
+2026-02-11 20:47:47,707 23284 INFO ? odoo.modules.loading: loading 1 modules... 
+2026-02-11 20:47:47,711 23284 INFO ? odoo.modules.loading: 1 modules loaded in 0.00s, 0 queries (+0 extra) 
+2026-02-11 20:47:47,712 23284 INFO ? odoo.modules.loading: loading 26 modules... 
+2026-02-11 20:47:47,723 23284 INFO ? odoo.modules.loading: 26 modules loaded in 0.01s, 0 queries (+0 extra) 
+2026-02-11 20:47:47,795 23284 INFO ? odoo.modules.loading: Modules loaded. 
+2026-02-11 20:47:47,804 23284 INFO ? odoo.registry: Registry loaded in 0.247s 
+2026-02-11 20:47:47,804 23284 INFO erp_final odoo.addons.base.models.ir_http: Generating routing map for key None 
+2026-02-11 20:47:47,915 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='v.name' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,916 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='d.name' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,917 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='data_atualizacao' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,918 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.0f}%'.format(tanque.percentual_nivel or 0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,919 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.estoque_atual or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,919 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='dias_restantes or 0' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,920 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.capacidade or 6000.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,920 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.2f}'.format(avg_kml or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,921 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.2f}'.format(avg_cost_km or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,921 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.2f}'.format(consumo_valor or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,922 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='total_abastecimentos' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,922 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(consumo_litros or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,923 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='periodo_mes' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,924 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="dia['dia']" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,924 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'%.0f' % dia['litros']" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,925 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='ultimo_abastecimento.data_hora' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,926 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='ultimo_abastecimento.equipamento_id.name' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,926 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="ultimo_abastecimento.placa or '-'" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,926 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(ultimo_abastecimento.horimetro_odometro or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,927 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.2f}'.format(ultimo_abastecimento.quantidade_litros or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,927 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}'.format(ultimo_abastecimento.consumo_kml or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,928 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='ultimo_abastecimento.usuario_id.name' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,929 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='len(veiculos_alerta)' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,930 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="alerta['veiculo']" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,930 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="alerta['placa']" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,931 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}'.format(alerta['consumo'])" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,931 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}'.format(alerta['media'])" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,932 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}%'.format(tanque.percentual_nivel)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,933 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='tanque.name' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,933 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.capacidade)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,933 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.estoque_atual)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,950 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='v.name' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,952 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='d.name' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,953 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='data_atualizacao' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,954 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.0f}%'.format(tanque.percentual_nivel or 0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,955 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.estoque_atual or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,956 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='dias_restantes or 0' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,957 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.capacidade or 6000.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,958 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.2f}'.format(avg_kml or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,958 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.2f}'.format(avg_cost_km or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,959 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.2f}'.format(consumo_valor or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,960 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='total_abastecimentos' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,960 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(consumo_litros or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,961 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='periodo_mes' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,962 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="dia['dia']" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,962 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'%.0f' % dia['litros']" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,964 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='ultimo_abastecimento.data_hora' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,964 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='ultimo_abastecimento.equipamento_id.name' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,964 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="ultimo_abastecimento.placa or '-'" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,965 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(ultimo_abastecimento.horimetro_odometro or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,965 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.2f}'.format(ultimo_abastecimento.quantidade_litros or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,965 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}'.format(ultimo_abastecimento.consumo_kml or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,966 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='ultimo_abastecimento.usuario_id.name' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,967 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='len(veiculos_alerta)' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,967 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="alerta['veiculo']" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,968 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="alerta['placa']" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,968 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}'.format(alerta['consumo'])" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,968 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}'.format(alerta['media'])" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,969 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}%'.format(tanque.percentual_nivel)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,970 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='tanque.name' in template 542. Replace by @t-out 
+2026-02-11 20:47:47,970 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.capacidade)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,971 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.estoque_atual)" in template 542. Replace by @t-out 
+2026-02-11 20:47:47,999 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="title or 'Odoo Report'" in template 198. Replace by @t-out 
+2026-02-11 20:47:48,109 23284 INFO erp_final werkzeug: 127.0.0.1 - - [11/Feb/2026 20:47:48] "GET /combustivel/dashboard HTTP/1.1" 200 - 99 0.078 0.477
+2026-02-11 20:48:04,941 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='v.name' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,942 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='d.name' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,942 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='data_atualizacao' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,943 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.0f}%'.format(tanque.percentual_nivel or 0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,944 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.estoque_atual or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,945 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='dias_restantes or 0' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,945 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.capacidade or 6000.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,946 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.2f}'.format(avg_kml or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,946 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.2f}'.format(avg_cost_km or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,947 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.2f}'.format(consumo_valor or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,947 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='total_abastecimentos' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,947 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(consumo_litros or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,948 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='periodo_mes' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,949 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="dia['dia']" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,950 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'%.0f' % dia['litros']" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,951 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='ultimo_abastecimento.data_hora' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,952 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='ultimo_abastecimento.equipamento_id.name' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,952 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="ultimo_abastecimento.placa or '-'" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,952 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(ultimo_abastecimento.horimetro_odometro or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,953 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.2f}'.format(ultimo_abastecimento.quantidade_litros or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,953 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}'.format(ultimo_abastecimento.consumo_kml or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,954 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='ultimo_abastecimento.usuario_id.name' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,955 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='len(veiculos_alerta)' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,955 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="alerta['veiculo']" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,956 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="alerta['placa']" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,956 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}'.format(alerta['consumo'])" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,956 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}'.format(alerta['media'])" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,958 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}%'.format(tanque.percentual_nivel)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,958 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='tanque.name' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,958 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.capacidade)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,959 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.estoque_atual)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,976 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='v.name' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,978 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='d.name' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,979 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='data_atualizacao' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,980 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.0f}%'.format(tanque.percentual_nivel or 0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,981 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.estoque_atual or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,982 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='dias_restantes or 0' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,982 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.capacidade or 6000.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,983 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.2f}'.format(avg_kml or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,984 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.2f}'.format(avg_cost_km or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,984 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.2f}'.format(consumo_valor or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,985 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='total_abastecimentos' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,985 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(consumo_litros or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,986 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='periodo_mes' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,988 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="dia['dia']" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,989 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'%.0f' % dia['litros']" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,990 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='ultimo_abastecimento.data_hora' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,991 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='ultimo_abastecimento.equipamento_id.name' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,991 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="ultimo_abastecimento.placa or '-'" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,992 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(ultimo_abastecimento.horimetro_odometro or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,992 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.2f}'.format(ultimo_abastecimento.quantidade_litros or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,993 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}'.format(ultimo_abastecimento.consumo_kml or 0.0)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,994 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='ultimo_abastecimento.usuario_id.name' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,995 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='len(veiculos_alerta)' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,996 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="alerta['veiculo']" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,996 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="alerta['placa']" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,997 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}'.format(alerta['consumo'])" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,997 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}'.format(alerta['media'])" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,999 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:.1f}%'.format(tanque.percentual_nivel)" in template 542. Replace by @t-out 
+2026-02-11 20:48:04,999 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc='tanque.name' in template 542. Replace by @t-out 
+2026-02-11 20:48:04,999 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.capacidade)" in template 542. Replace by @t-out 
+2026-02-11 20:48:05,000 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="'{:,.0f}'.format(tanque.estoque_atual)" in template 542. Replace by @t-out 
+2026-02-11 20:48:05,024 23284 WARNING erp_final odoo.addons.base.models.ir_qweb: Found deprecated directive @t-esc="title or 'Odoo Report'" in template 198. Replace by @t-out 
+2026-02-11 20:48:05,129 23284 INFO erp_final werkzeug: 127.0.0.1 - - [11/Feb/2026 20:48:05] "GET /combustivel/dashboard?vehicle_id=1&driver_id=0 HTTP/1.1" 200 - 67 0.022 0.226

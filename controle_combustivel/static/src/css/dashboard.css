@@ -229,6 +229,62 @@
     border: none;
 }
 
+/* === FILTROS === */
+.o_dashboard_filter_bar {
+    background: var(--combustivel-card-bg);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid var(--combustivel-border);
+}
+
+.o_dashboard_filter_bar .form-select {
+    border-radius: 8px;
+    border: 1px solid var(--combustivel-border);
+    font-size: 0.9rem;
+    background-color: transparent;
+    color: var(--combustivel-text-dark);
+}
+
+/* === INDICADORES DE EFICIÊNCIA === */
+.kpi-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--combustivel-primary);
+}
+
+.kpi-unit {
+    font-size: 0.9rem;
+    color: var(--combustivel-text-secondary);
+    margin-left: 4px;
+}
+
+/* === TABELA DE ALERTAS === */
+.alert-item {
+    padding: 10px;
+    border-bottom: 1px solid var(--combustivel-border);
+}
+
+.alert-item:last-child {
+    border-bottom: none;
+}
+
+/* === LINHA DE TENDÊNCIA === */
+.trend-container {
+    position: relative;
+    width: 100%;
+}
+
+.trend-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: rgba(164, 58, 47, 0.3);
+    border-top: 2px dashed var(--combustivel-primary);
+    top: 50%;
+    /* Representa a média */
+    z-index: 1;
+}
+
 /* === RESPONSIVIDADE === */
 @media (max-width: 768px) {
     .o_combustivel_dashboard .card-body {
@@ -265,6 +321,18 @@
 /* === TEXTO === */
 .text-primary {
     color: var(--combustivel-primary) !important;
+}
+
+.text-success {
+    color: var(--combustivel-green) !important;
+}
+
+.text-warning {
+    color: var(--combustivel-yellow) !important;
+}
+
+.text-danger {
+    color: var(--combustivel-red) !important;
 }
 
 .text-muted {

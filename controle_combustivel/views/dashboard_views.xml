@@ -20,115 +20,143 @@
                 <link rel="stylesheet" 
                       href="/controle_combustivel/static/src/css/dashboard.css"/>
             </t>
-            <div class="o_combustivel_dashboard container-fluid py-4">
-                <!-- Header -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h1 class="h3 mb-1 fw-bold">Dashboard de Combustível</h1>
-                                <p class="text-muted mb-0">
-                                    <span class="badge bg-success me-2">
-                                        <i class="fa fa-circle me-1"></i> Odoo Sync Ativo
-                                    </span>
-                                    Atualizado em <t t-esc="data_atualizacao"/>
-                                </p>
-                            </div>
-                            <div>
-                                <a t-attf-href="/web#action=#{action_abastecimento}" 
-                                   class="btn btn-primary">
-                                    <i class="fa fa-plus me-1"></i> Novo Abastecimento
-                                </a>
-                            </div>
+            <div class="o_combustivel_dashboard p-4">
+                <!-- Barra de Filtros (Novidade) -->
+                <div class="o_dashboard_filter_bar mb-4 shadow-sm">
+                    <form action="/combustivel/dashboard" method="get" class="row g-3 align-items-center">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted mb-1">Veículo</label>
+                            <select name="vehicle_id" class="form-select" onchange="this.form.submit()">
+                                <option value="0">Todos os Veículos</option>
+                                <t t-foreach="vehicles" t-as="v">
+                                    <option t-att-value="v.id" t-att-selected="v.id == selected_vehicle">
+                                        <t t-esc="v.name"/>
+                                    </option>
+                                </t>
+                            </select>
                         </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted mb-1">Motorista</label>
+                            <select name="driver_id" class="form-select" onchange="this.form.submit()">
+                                <option value="0">Todos os Motoristas</option>
+                                <t t-foreach="drivers" t-as="d">
+                                    <option t-att-value="d.id" t-att-selected="d.id == selected_driver">
+                                        <t t-esc="d.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-md-4 text-end ms-auto">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.location.href='/combustivel/dashboard'">
+                                <i class="fa fa-refresh me-1"></i>Limpar Filtros
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Cabeçalho -->
+                <div class="row align-items-center mb-4">
+                    <div class="col-md-6">
+                        <h2 class="mb-1 fw-bold">Dashboard de Combustível</h2>
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-success rounded-pill me-2">
+                                <i class="fa fa-circle me-1" style="font-size: 8px;"></i>Odoo Sync Ativo
+                            </span>
+                            <small class="text-muted">Atualizado em <t t-esc="data_atualizacao"/></small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                        <a t-attf-href="/web#action=#{action_abastecimento}&amp;view_type=form" 
+                           class="btn btn-primary shadow-sm rounded-pill px-4">
+                            <i class="fa fa-plus me-2"></i>Novo Abastecimento
+                        </a>
                     </div>
                 </div>
                 
                 <!-- KPI Cards Row -->
+                <!-- Cards Principais -->
                 <div class="row g-4 mb-4">
-                    <!-- Card: Estoque Atual -->
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card h-100 border-0 shadow-sm">
+                    <!-- Estoque -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <div>
-                                        <p class="text-uppercase text-muted small fw-semibold mb-1">
-                                            Estoque Atual
-                                        </p>
-                                        <h2 class="mb-0 fw-bold">
-                                            <t t-esc="'{:,.0f}'.format(tanque.estoque_atual)"/> 
-                                            <small class="text-muted fw-normal">L</small>
-                                        </h2>
-                                    </div>
-                                    <div t-attf-class="badge rounded-pill #{cor_badge}">
-                                        <t t-esc="'{:.0f}%'.format(tanque.percentual_nivel)"/>
-                                    </div>
+                                    <h6 class="text-uppercase fw-bold text-muted small mb-0">Estoque Disponível</h6>
+                                    <span t-attf-class="badge rounded-pill #{cor_badge}">
+                                        <t t-esc="'{:.0f}%'.format(tanque.percentual_nivel or 0)"/>
+                                    </span>
                                 </div>
-                                <!-- Barra de Progresso -->
-                                <div class="progress" style="height: 8px;">
+                                <div class="d-flex align-items-baseline mb-3">
+                                    <h2 class="mb-0 fw-bold"><t t-esc="'{:,.0f}'.format(tanque.estoque_atual or 0.0)"/></h2>
+                                    <span class="ms-2 text-muted">L</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 6px;">
                                     <div t-attf-class="progress-bar #{cor_progress}" 
-                                         role="progressbar"
-                                         t-attf-style="width: #{tanque.percentual_nivel}%"
-                                         t-att-aria-valuenow="tanque.percentual_nivel"
-                                         aria-valuemin="0" 
-                                         aria-valuemax="100">
-                                    </div>
+                                         role="progressbar" 
+                                         t-attf-style="width: #{tanque.percentual_nivel or 0}%;"></div>
                                 </div>
-                                <p class="text-muted small mt-2 mb-0">
-                                    Capacidade: <t t-esc="'{:,.0f}'.format(tanque.capacidade)"/> L
-                                </p>
+                                <div class="d-flex justify-content-between small">
+                                    <span class="text-muted">Previsão: <strong class="text-dark"><t t-esc="dias_restantes or 0"/> dias</strong></span>
+                                    <span class="text-muted">Capacidade: <t t-esc="'{:,.0f}'.format(tanque.capacidade or 6000.0)"/> L</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Card: Consumo Mensal -->
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card h-100 border-0 shadow-sm">
+
+                    <!-- Eficiência (Consumo Médio) -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
                             <div class="card-body">
-                                <p class="text-uppercase text-muted small fw-semibold mb-1">
-                                    Consumo do Mês
-                                </p>
-                                <h2 class="mb-0 fw-bold">
-                                    <t t-esc="'{:,.0f}'.format(consumo_litros)"/> 
-                                    <small class="text-muted fw-normal">L</small>
-                                </h2>
-                                <p class="text-muted small mt-2 mb-0">
-                                    <t t-esc="periodo_mes"/>
-                                </p>
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h6 class="text-uppercase fw-bold text-muted small mb-0">Eficiência da Frota</h6>
+                                    <i class="fa fa-bolt text-warning"></i>
+                                </div>
+                                <div class="d-flex align-items-baseline mb-3">
+                                    <h2 class="mb-0 fw-bold"><t t-esc="'{:.2f}'.format(avg_kml or 0.0)"/></h2>
+                                    <span class="ms-1 kpi-unit">km/L</span>
+                                </div>
+                                <div class="small mt-3">
+                                    <span class="text-success"><i class="fa fa-clock-o me-1"></i>Meta: 8.5 km/L</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Card: Gasto Mensal -->
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card h-100 border-0 shadow-sm">
+
+                    <!-- Financeiro (Custo por KM) -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
                             <div class="card-body">
-                                <p class="text-uppercase text-muted small fw-semibold mb-1">
-                                    Gasto do Mês
-                                </p>
-                                <h2 class="mb-0 fw-bold">
-                                    R$ <t t-esc="'{:,.2f}'.format(consumo_valor)"/>
-                                </h2>
-                                <p class="text-muted small mt-2 mb-0">
-                                    <t t-esc="periodo_mes"/>
-                                </p>
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h6 class="text-uppercase fw-bold text-muted small mb-0">Custo Operacional</h6>
+                                    <i class="fa fa-money text-success"></i>
+                                </div>
+                                <div class="d-flex align-items-baseline mb-3">
+                                    <span class="me-1 small text-muted">R$</span>
+                                    <h2 class="mb-0 fw-bold"><t t-esc="'{:.2f}'.format(avg_cost_km or 0.0)"/></h2>
+                                    <span class="ms-1 kpi-unit">/km</span>
+                                </div>
+                                <div class="small mt-3">
+                                    <span class="text-muted">Total Mês: R$ <t t-esc="'{:,.2f}'.format(consumo_valor or 0.0)"/></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Card: Total de Abastecimentos -->
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card h-100 border-0 shadow-sm">
+
+                    <!-- Volume Mensal -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
                             <div class="card-body">
-                                <p class="text-uppercase text-muted small fw-semibold mb-1">
-                                    Abastecimentos
-                                </p>
-                                <h2 class="mb-0 fw-bold">
-                                    <t t-esc="total_abastecimentos"/>
-                                </h2>
-                                <p class="text-muted small mt-2 mb-0">
-                                    Este mês
-                                </p>
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h6 class="text-uppercase fw-bold text-muted small mb-0">Abastecimentos</h6>
+                                    <span class="badge bg-light text-dark border"><t t-esc="total_abastecimentos"/> este mês</span>
+                                </div>
+                                <div class="d-flex align-items-baseline mb-3">
+                                    <h2 class="mb-0 fw-bold"><t t-esc="'{:,.0f}'.format(consumo_litros or 0.0)"/></h2>
+                                    <span class="ms-2 text-muted">Total L</span>
+                                </div>
+                                <div class="small mt-3">
+                                    <span class="text-muted">Período: <t t-esc="periodo_mes"/></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -145,21 +173,28 @@
                                 </h5>
                                 <small class="text-muted">Últimos 7 dias</small>
                             </div>
-                            <div class="card-body d-flex align-items-end justify-content-around pb-4" style="min-height: 200px;">
-                                <t t-foreach="consumo_diario" t-as="dia">
-                                    <div class="text-center d-flex flex-column align-items-center" style="width: 12%;">
-                                        <div class="bg-primary rounded-top" 
-                                             t-attf-style="width: 30px; height: #{dia['altura']}px; transition: height 1s ease; opacity: 0.8;"
-                                             t-att-title="dia['litros']">
+                            <div class="card-body pb-4" style="min-height: 200px; position: relative;">
+                                <!-- Linha de Tendência (SVG simples) -->
+                                <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;">
+                                    <line x1="5%" y1="50%" x2="95%" y2="50%" stroke="var(--combustivel-primary)" stroke-dasharray="4" opacity="0.3" stroke-width="1"/>
+                                </svg>
+                                
+                                <div class="d-flex align-items-end justify-content-around h-100" style="position: relative; z-index: 1;">
+                                    <t t-foreach="consumo_diario" t-as="dia">
+                                        <div class="text-center d-flex flex-column align-items-center" style="width: 12%;">
+                                            <div t-attf-class="bg-primary rounded-top #{'opacity-50' if dia['litros'] == 0 else ''}" 
+                                                 t-attf-style="width: 30px; height: #{dia['altura']}px; transition: height 1s ease;"
+                                                 t-att-title="'%s L' % dia['litros']">
+                                            </div>
+                                            <div class="mt-2" style="font-size: 0.75rem; color: #697274;">
+                                                <t t-esc="dia['dia']"/>
+                                            </div>
+                                            <div class="fw-bold" style="font-size: 0.7rem;">
+                                                <t t-if="dia['litros'] > 0"><t t-esc="'%.0f' % dia['litros']"/></t>
+                                            </div>
                                         </div>
-                                        <div class="mt-2" style="font-size: 0.75rem; color: #697274;">
-                                            <t t-esc="dia['dia']"/>
-                                        </div>
-                                        <div class="fw-bold" style="font-size: 0.7rem;">
-                                            <t t-esc="'%.1f' % dia['litros']"/>
-                                        </div>
-                                    </div>
-                                </t>
+                                    </t>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -173,34 +208,43 @@
                                     Último Abastecimento
                                 </h5>
                             </div>
-                            <div class="card-body" t-if="ultimo_abastecimento">
+                            <div class="card-body" t-if="ultimo_abastecimento and len(ultimo_abastecimento) > 0">
                                 <div class="table-responsive">
-                                    <table class="table table-borderless mb-0">
-                                        <tr>
-                                            <td class="text-muted" style="width: 40%;">Data/Hora</td>
-                                            <td class="fw-semibold">
-                                                <t t-esc="ultimo_abastecimento.data_hora"/>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-muted">Veículo</td>
-                                            <td class="fw-semibold">
-                                                <t t-esc="ultimo_abastecimento.equipamento_id.name"/> 
-                                                (<t t-esc="ultimo_abastecimento.placa or '-'"/>)
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-muted">Quantidade</td>
-                                            <td class="fw-semibold">
-                                                <t t-esc="'{:,.2f}'.format(ultimo_abastecimento.quantidade_litros)"/> L
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-muted">Responsável</td>
-                                            <td class="fw-semibold">
-                                                <t t-esc="ultimo_abastecimento.usuario_id.name"/>
-                                            </td>
-                                        </tr>
+                                    <table class="table table-borderless table-sm mb-0">
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-muted">Data/Hora</td>
+                                                <td class="fw-semibold">
+                                                    <t t-esc="ultimo_abastecimento.data_hora"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Veículo</td>
+                                                <td class="fw-semibold">
+                                                    <t t-esc="ultimo_abastecimento.equipamento_id.name"/> 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Placa / Leitura</td>
+                                                <td class="fw-semibold">
+                                                    <t t-esc="ultimo_abastecimento.placa or '-'"/> / 
+                                                    <t t-esc="'{:,.0f}'.format(ultimo_abastecimento.horimetro_odometro or 0.0)"/> km
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Quantidade</td>
+                                                <td class="fw-semibold">
+                                                    <t t-esc="'{:,.2f}'.format(ultimo_abastecimento.quantidade_litros or 0.0)"/> L
+                                                    <span class="ms-1 small text-success">(<t t-esc="'{:.1f}'.format(ultimo_abastecimento.consumo_kml or 0.0)"/> km/L)</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Responsável</td>
+                                                <td class="fw-semibold">
+                                                    <t t-esc="ultimo_abastecimento.usuario_id.name"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -210,9 +254,48 @@
                         </div>
                     </div>
                     
+                    <!-- Alertas de Desvio e Manutenção -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 fw-semibold">
+                                    <i class="fa fa-exclamation-triangle me-2 text-danger"></i>
+                                    Alertas de Desvio
+                                </h5>
+                                <span class="badge bg-danger rounded-pill" t-if="veiculos_alerta"><t t-esc="len(veiculos_alerta)"/></span>
+                            </div>
+                            <div class="card-body pt-0">
+                                <t t-if="veiculos_alerta">
+                                    <div class="alert-list">
+                                        <t t-foreach="veiculos_alerta" t-as="alerta">
+                                            <div class="alert-item d-flex align-items-center py-2">
+                                                <div class="me-3">
+                                                    <i class="fa fa-warning text-warning"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="fw-bold small"><t t-esc="alerta['veiculo']"/> (<t t-esc="alerta['placa']"/>)</div>
+                                                    <div class="text-muted" style="font-size: 0.75rem;">
+                                                        Consumo caiu para <t t-esc="'{:.1f}'.format(alerta['consumo'])"/> km/L (Média: <t t-esc="'{:.1f}'.format(alerta['media'])"/>)
+                                                    </div>
+                                                </div>
+                                                <div class="text-danger small fw-bold">-20%+</div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="text-center py-4">
+                                        <i class="fa fa-check-circle text-success fa-2x mb-2"></i>
+                                        <p class="text-muted small mb-0">Nenhum desvio detectado este mês.</p>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Status do Tanque Visual -->
                     <div class="col-lg-6">
-                        <div class="card border-0 shadow-sm">
+                        <div class="card border-0 shadow-sm h-100">
                             <div class="card-header bg-transparent border-0">
                                 <h5 class="mb-0 fw-semibold">
                                     <i class="fa fa-tint me-2 text-primary"></i>

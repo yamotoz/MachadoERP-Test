@@ -107,6 +107,38 @@ class Abastecimento(models.Model):
         help='Valor total do abastecimento',
     )
     
+    # === Campos de Eficiência (Novidade) ===
+    leitura_anterior = fields.Float(
+        string='Leitura Anterior',
+        compute='_compute_eficiencia',
+        store=True,
+        readonly=True,
+        help='Última medição registrada para este veículo',
+    )
+    km_percorrido = fields.Float(
+        string='KM/H Percorrido',
+        compute='_compute_eficiencia',
+        store=True,
+        readonly=True,
+        help='Diferença entre a leitura atual e a anterior',
+    )
+    consumo_kml = fields.Float(
+        string='Consumo (km/L)',
+        compute='_compute_eficiencia',
+        store=True,
+        readonly=True,
+        digits=(12, 2),
+        help='Média de consumo deste abastecimento',
+    )
+    custo_km = fields.Float(
+        string='Custo por KM (R$)',
+        compute='_compute_eficiencia',
+        store=True,
+        readonly=True,
+        digits=(12, 2),
+        help='Custo financeiro por quilômetro percorrido',
+    )
+    
     # === Campos de Estado ===
     state = fields.Selection([
         ('rascunho', 'Rascunho'),
@@ -151,6 +183,46 @@ class Abastecimento(models.Model):
         """Calcula o valor total do abastecimento."""
         for record in self:
             record.total = record.quantidade_litros * record.valor_por_litro
+
+    @api.depends('equipamento_id', 'horimetro_odometro', 'state', 'quantidade_litros', 'total')
+    def _compute_eficiencia(self):
+        """Calcula indicadores de eficiência baseados no histórico do veículo."""
+        for record in self:
+            if record.state != 'confirmado':
+                record.leitura_anterior = 0
+                record.km_percorrido = 0
+                record.consumo_kml = 0
+                record.custo_km = 0
+                continue
+
+            # Busca o abastecimento anterior CONFIRMADO deste mesmo veículo
+            ultimo = self.search([
+                ('equipamento_id', '=', record.equipamento_id.id),
+                ('state', '=', 'confirmado'),
+                ('id', '<', record.id),
+                ('tipo_medicao', '=', record.tipo_medicao),
+            ], order='data_hora desc, id desc', limit=1)
+
+            if ultimo:
+                record.leitura_anterior = ultimo.horimetro_odometro
+                record.km_percorrido = record.horimetro_odometro - ultimo.horimetro_odometro
+                
+                # Evita divisão por zero
+                if record.quantidade_litros > 0:
+                    record.consumo_kml = record.km_percorrido / record.quantidade_litros
+                else:
+                    record.consumo_kml = 0
+                
+                if record.km_percorrido > 0:
+                    record.custo_km = record.total / record.km_percorrido
+                else:
+                    record.custo_km = 0
+            else:
+                # Primeiro abastecimento do veículo
+                record.leitura_anterior = 0
+                record.km_percorrido = 0
+                record.consumo_kml = 0
+                record.custo_km = 0
 
     # === Onchange para UI ===
     @api.onchange('quantidade_litros', 'valor_por_litro')

@@ -31,36 +31,73 @@ class DashboardCombustivelController(http.Controller):
                 'capacidade': 6000.0,
             })
         
+        # Filtros dinâmicos (kw)
+        vehicle_id = int(kw.get('vehicle_id', 0))
+        driver_id = int(kw.get('driver_id', 0))
+        
         # Calcular período do mês atual
         hoje = fields.Date.today()
         primeiro_dia_mes = hoje.replace(day=1)
         ultimo_dia_mes = (primeiro_dia_mes + relativedelta(months=1)) - relativedelta(days=1)
         
-        # Buscar abastecimentos do mês
+        # Base de busca
         Abastecimento = request.env['controle.combustivel.abastecimento']
-        abastecimentos_mes = Abastecimento.search([
+        domain = [
             ('data_hora', '>=', datetime.combine(primeiro_dia_mes, datetime.min.time())),
             ('data_hora', '<=', datetime.combine(ultimo_dia_mes, datetime.max.time())),
             ('state', '=', 'confirmado'),
-        ])
+        ]
         
-        # Calcular totais
-        consumo_litros = sum(abastecimentos_mes.mapped('quantidade_litros'))
-        consumo_valor = sum(abastecimentos_mes.mapped('total'))
+        if vehicle_id:
+            domain.append(('equipamento_id', '=', vehicle_id))
+        if driver_id:
+            domain.append(('motorista_id', '=', driver_id))
+            
+        abastecimentos_mes = Abastecimento.search(domain)
+        
+        # Calcular totais (Defensivo contra Nones)
+        consumo_litros = sum(a.quantidade_litros or 0.0 for a in abastecimentos_mes)
+        consumo_valor = sum(a.total or 0.0 for a in abastecimentos_mes)
         total_abastecimentos = len(abastecimentos_mes)
+
+        # KPIs de Eficiência da Frota
+        total_km = sum(a.km_percorrido or 0.0 for a in abastecimentos_mes)
+        avg_kml = total_km / consumo_litros if consumo_litros > 0 else 0
+        avg_cost_km = consumo_valor / total_km if total_km > 0 else 0
+        
+        # Estimativa de Duração do Estoque (Média de consumo diário)
+        dias_passados = max(1, hoje.day)
+        consumo_diario_medio = consumo_litros / dias_passados
+        dias_restantes = int(tanque.estoque_atual / consumo_diario_medio) if consumo_diario_medio > 0 else 0
+        
+        veiculos_alerta = []
+        if not vehicle_id:
+            for v in abastecimentos_mes.mapped('equipamento_id'):
+                abasts_v = abastecimentos_mes.filtered(lambda a: a.equipamento_id == v)
+                if len(abasts_v) >= 2:
+                    media_v = sum(a.consumo_kml or 0.0 for a in abasts_v) / len(abasts_v)
+                    for a in abasts_v:
+                        if a.consumo_kml and a.consumo_kml > 0 and a.consumo_kml < (media_v * 0.8):
+                            veiculos_alerta.append({
+                                'veiculo': v.name,
+                                'placa': v.license_plate,
+                                'consumo': a.consumo_kml or 0.0,
+                                'media': media_v
+                            })
+                            break
         
         # Buscar último abastecimento
         ultimo_abastecimento = Abastecimento.search([
             ('state', '=', 'confirmado'),
         ], order='data_hora desc', limit=1)
         
-        # Definir cores baseado no nível
+        # Definir cores baseado no nível (Novo: Amarelo 30%, Vermelho 15%)
         percentual = tanque.percentual_nivel if tanque else 0
-        if percentual > 50:
+        if percentual > 30:
             cor_badge = 'bg-success'
             cor_progress = 'bg-success'
             cor_tank = 'tank-green'
-        elif percentual >= 20:
+        elif percentual >= 15:
             cor_badge = 'bg-warning'
             cor_progress = 'bg-warning'
             cor_tank = 'tank-yellow'
@@ -78,10 +115,16 @@ class DashboardCombustivelController(http.Controller):
                 ('data_hora', '<=', datetime.combine(dia, datetime.max.time())),
                 ('state', '=', 'confirmado'),
             ]).mapped('quantidade_litros'))
+            
+            # Cálculo de altura de barra seguro contra divisão por zero
+            media_litros_mes = consumo_litros / max(1, total_abastecimentos)
+            divisor = max(10, media_litros_mes * 3)
+            altura = min(100, (litros_dia / divisor) * 100) if total_abastecimentos > 0 else 0
+            
             consumo_diario.append({
                 'dia': dia.strftime('%d/%m'),
                 'litros': litros_dia,
-                'altura': min(100, (litros_dia / (consumo_litros/len(abastecimentos_mes) * 3 if total_abastecimentos > 0 else 100)) * 100) if total_abastecimentos > 0 else 0
+                'altura': altura
             })
 
         # Formatar período
@@ -106,6 +149,14 @@ class DashboardCombustivelController(http.Controller):
             'cor_tank': cor_tank,
             'action_abastecimento': request.env.ref('controle_combustivel.action_abastecimento_tree').id,
             'consumo_diario': consumo_diario,
+            'avg_kml': avg_kml,
+            'avg_cost_km': avg_cost_km,
+            'dias_restantes': dias_restantes,
+            'veiculos_alerta': veiculos_alerta[:3], # Top 3 alertas
+            'vehicles': request.env['fleet.vehicle'].search([]),
+            'drivers': request.env['res.partner'].search([('is_company', '=', False)]),
+            'selected_vehicle': vehicle_id,
+            'selected_driver': driver_id,
         }
         
         return request.render(
