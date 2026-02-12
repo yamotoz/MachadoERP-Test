@@ -3,199 +3,61 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
-
 class Abastecimento(models.Model):
-    """
-    Modelo principal para registro de abastecimentos de combustível.
-    Integrado com módulo de Frota do Odoo.
-    """
+    """ Registro de abastecimentos vinculado à frota. """
     _name = 'controle.combustivel.abastecimento'
     _description = 'Abastecimento de Combustível'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'data_hora desc, id desc'
     _rec_name = 'name'
 
-    # === Campos de Identificação ===
-    name = fields.Char(
-        string='Número',
-        required=True,
-        copy=False,
-        readonly=True,
-        default=lambda self: _('Novo'),
-        help='Número de identificação do abastecimento',
-    )
+    # Identificação
+    name = fields.Char(string='Número', required=True, copy=False, readonly=True, default=lambda self: _('Novo'))
     
-    # === Campos de Data/Hora ===
-    data_hora = fields.Datetime(
-        string='Data/Hora',
-        required=True,
-        default=fields.Datetime.now,
-        tracking=True,
-        help='Data e hora do abastecimento',
-    )
+    # Dados Gerais
+    data_hora = fields.Datetime(string='Data/Hora', required=True, default=fields.Datetime.now, tracking=True)
+    equipamento_id = fields.Many2one('fleet.vehicle', string='Veículo/Equipamento', required=True, tracking=True)
+    placa = fields.Char(related='equipamento_id.license_plate', string='Placa', store=True, readonly=True)
+    motorista_id = fields.Many2one('res.partner', string='Motorista', tracking=True, domain="[('is_company', '=', False)]")
+    usuario_id = fields.Many2one('res.users', string='Registrado por', default=lambda self: self.env.user, readonly=True, tracking=True)
+    tanque_id = fields.Many2one('controle.combustivel.tanque', string='Tanque', required=True, default=lambda self: self._default_tanque(), tracking=True)
     
-    # === Relações ===
-    equipamento_id = fields.Many2one(
-        'fleet.vehicle',
-        string='Veículo/Equipamento',
-        required=True,
-        tracking=True,
-        help='Veículo ou equipamento abastecido',
-    )
-    placa = fields.Char(
-        related='equipamento_id.license_plate',
-        string='Placa',
-        store=True,
-        readonly=True,
-    )
-    motorista_id = fields.Many2one(
-        'res.partner',
-        string='Motorista',
-        tracking=True,
-        domain="[('is_company', '=', False)]",
-        help='Motorista responsável pelo veículo',
-    )
-    usuario_id = fields.Many2one(
-        'res.users',
-        string='Registrado por',
-        default=lambda self: self.env.user,
-        readonly=True,
-        tracking=True,
-        help='Usuário que registrou o abastecimento',
-    )
-    tanque_id = fields.Many2one(
-        'controle.combustivel.tanque',
-        string='Tanque',
-        required=True,
-        default=lambda self: self._default_tanque(),
-        tracking=True,
-        help='Tanque de origem do combustível',
-    )
+    # Medição e Consumo
+    horimetro_odometro = fields.Float(string='Horímetro/Odômetro', required=True, tracking=True)
+    tipo_medicao = fields.Selection([('horimetro', 'Horímetro (h)'), ('odometro', 'Odômetro (km)')], string='Tipo de Medição', default='odometro')
+    quantidade_litros = fields.Float(string='Quantidade (L)', required=True, tracking=True)
+    valor_por_litro = fields.Float(string='Valor por Litro (R$)', required=True, tracking=True, digits=(12, 4))
+    total = fields.Float(string='Total (R$)', compute='_compute_total', store=True, readonly=True, digits=(12, 2))
     
-    # === Campos de Medição ===
-    horimetro_odometro = fields.Float(
-        string='Horímetro/Odômetro',
-        required=True,
-        tracking=True,
-        help='Leitura atual do horímetro (horas) ou odômetro (km)',
-    )
-    tipo_medicao = fields.Selection([
-        ('horimetro', 'Horímetro (h)'),
-        ('odometro', 'Odômetro (km)'),
-    ], string='Tipo de Medição', default='odometro')
+    # Eficiência
+    leitura_anterior = fields.Float(string='Leitura Anterior', compute='_compute_eficiencia', store=True)
+    km_percorrido = fields.Float(string='KM/H Percorrido', compute='_compute_eficiencia', store=True)
+    consumo_kml = fields.Float(string='Consumo (km/L)', compute='_compute_eficiencia', store=True, digits=(12, 2))
+    custo_km = fields.Float(string='Custo por KM (R$)', compute='_compute_eficiencia', store=True, digits=(12, 2))
     
-    # === Campos Financeiros ===
-    quantidade_litros = fields.Float(
-        string='Quantidade (L)',
-        required=True,
-        tracking=True,
-        help='Quantidade de litros abastecidos',
-    )
-    valor_por_litro = fields.Float(
-        string='Valor por Litro (R$)',
-        required=True,
-        tracking=True,
-        digits=(12, 4),
-        help='Preço por litro do combustível',
-    )
-    total = fields.Float(
-        string='Total (R$)',
-        compute='_compute_total',
-        store=True,
-        readonly=True,
-        digits=(12, 2),
-        help='Valor total do abastecimento',
-    )
-    
-    # === Campos de Eficiência (Novidade) ===
-    leitura_anterior = fields.Float(
-        string='Leitura Anterior',
-        compute='_compute_eficiencia',
-        store=True,
-        readonly=True,
-        help='Última medição registrada para este veículo',
-    )
-    km_percorrido = fields.Float(
-        string='KM/H Percorrido',
-        compute='_compute_eficiencia',
-        store=True,
-        readonly=True,
-        help='Diferença entre a leitura atual e a anterior',
-    )
-    consumo_kml = fields.Float(
-        string='Consumo (km/L)',
-        compute='_compute_eficiencia',
-        store=True,
-        readonly=True,
-        digits=(12, 2),
-        help='Média de consumo deste abastecimento',
-    )
-    custo_km = fields.Float(
-        string='Custo por KM (R$)',
-        compute='_compute_eficiencia',
-        store=True,
-        readonly=True,
-        digits=(12, 2),
-        help='Custo financeiro por quilômetro percorrido',
-    )
-    
-    # === Campos de Estado ===
-    state = fields.Selection([
-        ('rascunho', 'Rascunho'),
-        ('confirmado', 'Confirmado'),
-        ('cancelado', 'Cancelado'),
-    ], string='Status', default='rascunho', tracking=True, copy=False)
-    
-    # === Campos Auxiliares ===
-    observacao = fields.Text(
-        string='Observações',
-        help='Observações ou anotações sobre o abastecimento',
-    )
-    comprovante = fields.Binary(
-        string='Comprovante',
-        attachment=True,
-        help='Foto ou scan do comprovante de abastecimento',
-    )
-    comprovante_filename = fields.Char(
-        string='Nome do Arquivo',
-    )
-    
-    # === Campos Computados de Contexto ===
-    estoque_disponivel = fields.Float(
-        related='tanque_id.estoque_atual',
-        string='Estoque Disponível',
-        readonly=True,
-    )
-    company_id = fields.Many2one(
-        'res.company',
-        string='Empresa',
-        default=lambda self: self.env.company,
-    )
+    # Estado e Diversos
+    state = fields.Selection([('rascunho', 'Rascunho'), ('confirmado', 'Confirmado'), ('cancelado', 'Cancelado')], string='Status', default='rascunho', tracking=True, copy=False)
+    observacao = fields.Text(string='Observações')
+    comprovante = fields.Binary(string='Comprovante', attachment=True)
+    comprovante_filename = fields.Char(string='Nome do Arquivo')
+    estoque_disponivel = fields.Float(related='tanque_id.estoque_atual', string='Estoque Disponível', readonly=True)
+    company_id = fields.Many2one('res.company', string='Empresa', default=lambda self: self.env.company)
 
-    # === Métodos de Default ===
     def _default_tanque(self):
-        """Retorna o tanque padrão do sistema."""
         return self.env['controle.combustivel.tanque'].search([], limit=1)
 
-    # === Campos Computados ===
     @api.depends('quantidade_litros', 'valor_por_litro')
     def _compute_total(self):
-        """Calcula o valor total do abastecimento."""
         for record in self:
             record.total = record.quantidade_litros * record.valor_por_litro
 
     @api.depends('equipamento_id', 'horimetro_odometro', 'state', 'quantidade_litros', 'total')
     def _compute_eficiencia(self):
-        """Calcula indicadores de eficiência baseados no histórico do veículo."""
         for record in self:
             if record.state != 'confirmado':
-                record.leitura_anterior = 0
-                record.km_percorrido = 0
-                record.consumo_kml = 0
-                record.custo_km = 0
+                record.leitura_anterior = record.km_percorrido = record.consumo_kml = record.custo_km = 0
                 continue
 
-            # Busca o abastecimento anterior CONFIRMADO deste mesmo veículo
             ultimo = self.search([
                 ('equipamento_id', '=', record.equipamento_id.id),
                 ('state', '=', 'confirmado'),
@@ -206,179 +68,72 @@ class Abastecimento(models.Model):
             if ultimo:
                 record.leitura_anterior = ultimo.horimetro_odometro
                 record.km_percorrido = record.horimetro_odometro - ultimo.horimetro_odometro
-                
-                # Evita divisão por zero
-                if record.quantidade_litros > 0:
-                    record.consumo_kml = record.km_percorrido / record.quantidade_litros
-                else:
-                    record.consumo_kml = 0
-                
-                if record.km_percorrido > 0:
-                    record.custo_km = record.total / record.km_percorrido
-                else:
-                    record.custo_km = 0
+                record.consumo_kml = record.km_percorrido / record.quantidade_litros if record.quantidade_litros > 0 else 0
+                record.custo_km = record.total / record.km_percorrido if record.km_percorrido > 0 else 0
             else:
-                # Primeiro abastecimento do veículo
-                record.leitura_anterior = 0
-                record.km_percorrido = 0
-                record.consumo_kml = 0
-                record.custo_km = 0
+                record.leitura_anterior = record.km_percorrido = record.consumo_kml = record.custo_km = 0
 
-    # === Onchange para UI ===
     @api.onchange('quantidade_litros', 'valor_por_litro')
     def _onchange_calcular_total(self):
-        """Atualiza o total em tempo real na interface."""
         self.total = self.quantidade_litros * self.valor_por_litro
     
     @api.onchange('quantidade_litros')
     def _onchange_verificar_estoque(self):
-        """Alerta se quantidade solicitada excede estoque."""
-        if self.tanque_id and self.quantidade_litros:
-            if self.quantidade_litros > self.tanque_id.estoque_atual:
-                return {
-                    'warning': {
-                        'title': _('⚠️ Atenção: Estoque Baixo'),
-                        'message': _(
-                            'A quantidade solicitada (%.2f L) excede o estoque '
-                            'disponível (%.2f L).\n\n'
-                            'O abastecimento não poderá ser confirmado.'
-                        ) % (self.quantidade_litros, self.tanque_id.estoque_atual)
-                    }
-                }
+        if self.tanque_id and self.quantidade_litros > self.tanque_id.estoque_atual:
+            return {'warning': {'title': _('Estoque Baixo'), 'message': _('Quantidade excede o disponível.')}}
 
     @api.onchange('equipamento_id')
     def _onchange_equipamento(self):
-        """Preenche motorista padrão do veículo se disponível."""
-        if self.equipamento_id and self.equipamento_id.driver_id:
+        if self.equipamento_id.driver_id:
             self.motorista_id = self.equipamento_id.driver_id
 
-    # === Constraints ===
-    @api.constrains('quantidade_litros')
-    def _check_quantidade(self):
-        """Valida que a quantidade é positiva."""
+    @api.constrains('quantidade_litros', 'valor_por_litro', 'horimetro_odometro')
+    def _check_valores_positivos(self):
         for record in self:
-            if record.quantidade_litros <= 0:
-                raise ValidationError(
-                    _('❌ A quantidade de litros deve ser maior que zero.')
-                )
-
-    @api.constrains('valor_por_litro')
-    def _check_valor(self):
-        """Valida que o valor por litro é positivo."""
-        for record in self:
-            if record.valor_por_litro <= 0:
-                raise ValidationError(
-                    _('❌ O valor por litro deve ser maior que zero.')
-                )
-
-    @api.constrains('horimetro_odometro')
-    def _check_medicao(self):
-        """Valida que a medição é positiva."""
-        for record in self:
+            if record.quantidade_litros <= 0 or record.valor_por_litro <= 0:
+                raise ValidationError(_('Valores de quantidade e preço devem ser maiores que zero.'))
             if record.horimetro_odometro < 0:
-                raise ValidationError(
-                    _('❌ O horímetro/odômetro não pode ser negativo.')
-                )
+                raise ValidationError(_('Medição não pode ser negativa.'))
 
-    # === Métodos CRUD ===
     @api.model_create_multi
     def create(self, vals_list):
-        """Gera sequência automática na criação."""
         for vals in vals_list:
             if vals.get('name', _('Novo')) == _('Novo'):
-                vals['name'] = self.env['ir.sequence'].next_by_code(
-                    'controle.combustivel.abastecimento'
-                ) or _('Novo')
+                vals['name'] = self.env['ir.sequence'].next_by_code('controle.combustivel.abastecimento') or _('Novo')
         return super().create(vals_list)
 
+    def write(self, vals):
+        for record in self:
+            if record.state in ['confirmado', 'cancelado'] and not self.env.user.has_group('controle_combustivel.group_administrador'):
+                raise UserError(_('Registros confirmados não podem ser editados.'))
+        return super(Abastecimento, self).write(vals)
+
     def unlink(self):
-        """Impede exclusão de registros confirmados."""
         for record in self:
             if record.state == 'confirmado':
-                raise UserError(
-                    _('Não é possível excluir abastecimentos confirmados.\n'
-                      'Cancele o registro primeiro se necessário.')
-                )
-        return super().unlink()
+                raise UserError(_('Não é possível excluir abastecimentos confirmados.'))
+        return super(Abastecimento, self).unlink()
 
-    # === Ações de Workflow ===
     def action_confirmar(self):
-        """
-        Confirma o abastecimento.
-        Valida estoque e atualiza o tanque.
-        """
         for record in self:
-            if record.state != 'rascunho':
-                continue
-            
-            # Validação de tanque configurado
-            if not record.tanque_id:
-                raise ValidationError(
-                    _('⚠️ Nenhum tanque de combustível configurado.\n'
-                      'Contate o administrador do sistema.')
-                )
-            
-            # Validação de estoque
+            if record.state != 'rascunho': continue
             if not record.tanque_id.verificar_disponibilidade(record.quantidade_litros):
-                raise ValidationError(
-                    _('❌ Estoque insuficiente!\n\n'
-                      'Disponível: %.2f litros\n'
-                      'Solicitado: %.2f litros\n\n'
-                      'Aguarde a reposição do tanque.') % (
-                        record.tanque_id.estoque_atual,
-                        record.quantidade_litros
-                    )
-                )
-            
-            # Consumir do tanque
+                raise ValidationError(_('Estoque insuficiente!'))
             record.tanque_id.consumir_combustivel(record.quantidade_litros)
-            
-            # Atualizar estado
             record.state = 'confirmado'
-            
-            # Log de mensagem
-            record.message_post(
-                body=_('Abastecimento confirmado: %.2f litros') % record.quantidade_litros,
-                message_type='notification',
-            )
-        
+            record.message_post(body=_('Confirmado: %.2f L') % record.quantidade_litros)
         return True
 
     def action_cancelar(self):
-        """
-        Cancela o abastecimento.
-        Apenas administradores podem cancelar registros confirmados.
-        """
         for record in self:
-            if record.state == 'confirmado':
-                # Verificar permissão de admin
-                if not self.env.user.has_group('controle_combustivel.group_administrador'):
-                    raise UserError(
-                        _('Apenas administradores podem cancelar '
-                          'abastecimentos confirmados.')
-                    )
-                # Nota: O estoque já foi consumido, não revertemos automaticamente
-                # para evitar inconsistências. O admin deve fazer ajuste manual.
-                record.message_post(
-                    body=_('⚠️ Abastecimento cancelado após confirmação. '
-                           'Considere ajustar o estoque manualmente se necessário.'),
-                    message_type='notification',
-                )
-            
+            if record.state == 'confirmado' and not self.env.user.has_group('controle_combustivel.group_administrador'):
+                raise UserError(_('Somente administradores cancelam registros confirmados.'))
             record.state = 'cancelado'
-        
         return True
 
     def action_voltar_rascunho(self):
-        """Retorna ao status de rascunho (apenas de cancelado)."""
-        for record in self:
-            if record.state == 'cancelado':
-                record.state = 'rascunho'
+        self.filtered(lambda r: r.state == 'cancelado').write({'state': 'rascunho'})
         return True
 
-    # === Métodos de Relatório ===
     def action_imprimir(self):
-        """Gera relatório PDF do abastecimento."""
-        return self.env.ref(
-            'controle_combustivel.action_report_abastecimento'
-        ).report_action(self)
+        return self.env.ref('controle_combustivel.action_report_abastecimento').report_action(self)

@@ -1,15 +1,18 @@
 
 
-comando para iniciar:
+Comando para iniciar:
 
 .\odoo-venv\Scripts\python.exe odoo-19.0\odoo-bin -r odoo -w odoo --db_host 127.0.0.1 --db_port 5432 --addons-path odoo-19.0\addons,controle_combustivel\.. -d erp_final --limit-time-real=3600
 
 
-http://127.0.0.1:8069/web/login?db=erp_final
+Página para vizualizar: http://127.0.0.1:8069/web/login?db=erp_final
 
 
 
 
+
+
+**Problemas que eu tive de maneira geral(manual de bordo):**
 
 
 
